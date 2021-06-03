@@ -1,0 +1,77 @@
+<mat-vertical-stepper [linear]="isLinear" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Выберите мероприятие и загрузите файл</ng-template>
+      <app-project-select [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent></app-project-select> <br>
+      <app-work-package-select [selectedWorkPackage]="selectedWorkPackage"
+                               [hidden]="!selectedProject" #workPackageSelectComponent
+                               (outputSelectedWorkPackage)="getOutputWorkPackage($event)"
+      ></app-work-package-select>
+      <div style="padding-bottom: 20px">
+        <button mat-raised-button
+                [type]="selectFilesButtonType"
+                class="file-input-button"
+                (click)="fileInput.click()"
+                [attr.aria-label]="selectButtonText"
+        >
+          <span>{{ selectButtonText }}</span>
+          <input
+            #fileInput
+            type="file"
+            style="display: none"
+            [accept]="acceptedTypes"
+            [multiple]="allowMultipleFiles"
+            (change)="filesChanged($event)"
+          />
+        </button>
+        <span class="file-input-text" style="padding-left: 25px">{{ selectedFileText }}</span>
+      </div>
+      <div>
+        <button
+          mat-raised-button matStepperNext type="button" color = "primary" class="file-input-button" (click) = "startProcessFile()">
+          {{ uploadButtonText }}
+        </button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <form [formGroup]="secondFormGroup">
+      <ng-template matStepLabel>Загрузка финансового обеспечения</ng-template>
+      <mat-spinner *ngIf="secondSpinnerVisible" [diameter]="30"></mat-spinner>
+      <span>{{ financeResultText }}</span>
+    </form >
+  </mat-step>
+  <mat-step>
+    <form [formGroup]="thirdFormGroup">
+      <ng-template matStepLabel>Загрузка целевых показателей</ng-template>
+      <mat-spinner *ngIf="thirdSpinnerVisible" [diameter]="30"></mat-spinner>
+
+      <table mat-table *ngIf="targetTableVisible" class="mat-elevation-z8" #targetMatchTable [dataSource] = targetMatches>
+        <ng-container matColumnDef="el-budget">
+          <th mat-header-cell *matHeaderCellDef>Электронный бюджет</th>
+            <td mat-cell *matCellDef="let targetMatch">
+              <app-purpose-criteria-view [purposeCriteria]="targetMatch.purposeCriteria"></app-purpose-criteria-view>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="opsd">
+          <th mat-header-cell *matHeaderCellDef>ИСУП</th>
+          <td mat-cell *matCellDef="let targetMatch">
+            <app-target-select [targets]="targetsByProject" [selectedTarget]="targetMatch.target" (outputSelectedTarget)="getOutputTarget($event, targetMatch)" target-select></app-target-select>
+          </td>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </table>
+      <div style="padding-top: 20px">
+        <button
+          mat-raised-button *ngIf="processTargetBtnVisible" type="button" color = "primary" (click) = "continueProcessTarget()">
+          Продолжить загрузку
+        </button>
+      </div>
+      <div style="padding-top: 20px">
+        <span>{{ targetResultText }}</span>
+      </div>
+    </form>
+  </mat-step>
+</mat-vertical-stepper>

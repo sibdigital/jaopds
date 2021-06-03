@@ -1,0 +1,44 @@
+table {
+  width: 100%;
+}
+
+mat-row {
+  align-items: flex-start;
+}
+
+mat-cell{
+  display:flex !important;
+  justify-content:center!important;
+}
+
+mat-header-cell {
+  display:flex;
+  justify-content:center;
+}
+
+th.mat-header-cell {
+  border: none;
+}
+
+td.mat-cell {
+  border: none;
+}
+
+mat-table__wrapper .mat-table {
+  min-width: auto !important;
+  width: 100% !important;
+}
+
+.mat-column-el-budget {
+  //white-space: unset !important;
+  //flex: 0 0 50% !important;
+  width: 50%;
+}
+
+.mat-column-opsd {
+  //white-space: unset !important;
+  //flex: 0 0 50% !important;
+  width: 50%;
+}
+
+

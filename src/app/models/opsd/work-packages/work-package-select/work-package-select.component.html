@@ -1,0 +1,8 @@
+<mat-form-field appearance="fill" style="width: 500px">
+  <mat-label>Выберите мероприятия/КТ</mat-label>
+  <mat-select  [(ngModel)]="selectedWorkPackage" (ngModelChange) = "onChange($event)">
+    <mat-option *ngFor="let workPackage of workPackages" [value]="workPackage">
+      {{workPackage.subject}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

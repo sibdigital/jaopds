@@ -1,0 +1,11 @@
+::ng-deep .mat-form-field-wrapper{
+  margin-bottom: -1.34375em;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+
+
+
