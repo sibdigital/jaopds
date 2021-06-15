@@ -11,10 +11,15 @@ import {ProjectSelectModule} from "../../../models/opsd/projects/project-select/
 import {WorkPackageSelectModule} from "../../../models/opsd/work-packages/work-package-select/work-package-select.module";
 import {MatStepperModule} from "@angular/material/stepper";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {PurposeCriteriaViewModule} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-view/purpose-criteria-view.module";
 import {TargetSelectModule} from "../../../models/opsd/targets/target-select/target-select.module";
 import {MatTableModule} from "@angular/material/table";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatFormFieldControl, MatFormFieldModule} from "@angular/material/form-field";
+import {MatInput, MatInputModule} from "@angular/material/input";
+import {CommonModule} from "@angular/common";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -26,12 +31,19 @@ import {MatTableModule} from "@angular/material/table";
     BrowserAnimationsModule,
     AppRoutingModule,
 
+    CommonModule,
+    FormsModule,
+
     MatButtonModule,
     MatSelectModule,
     MatOptionModule,
     MatStepperModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSnackBarModule,
 
     ProjectSelectModule,
     WorkPackageSelectModule,

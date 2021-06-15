@@ -2,13 +2,13 @@ import {
   AfterContentInit, AfterViewInit,
   ChangeDetectorRef,
   Component, ElementRef, EventEmitter,
-  Input, Output, ViewChild
+  Input, OnInit, Output, ViewChild
 } from '@angular/core';
 import {ExecutionUploaderService} from "./shared/execution-uploader.service";
 import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from "../../../models/opsd/projects/project.model";
 import {WorkPackageSelectComponent} from "../../../models/opsd/work-packages/work-package-select/work-package-select.component";
-import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
+// import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
 import {JavaResponseBody} from "../../../models/java-response-body/java-response-body.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PurposeCriteria} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria.model";
@@ -21,6 +21,10 @@ import {PurposeCriteriaMonthlyExecution} from "../../../models/el-budget/executi
 import {MatStepper} from "@angular/material/stepper";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ProjectSelectComponent} from "../../../models/opsd/projects/project-select/project-select.component";
+import {MatRadioChange} from "@angular/material/radio";
+import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
+import {MatInput} from "@angular/material/input";
+import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
 
 interface TargetMatch {
   purposeCriteria: PurposeCriteria;
@@ -40,13 +44,6 @@ interface TargetMatch {
 })
 
 export class ExecutionUploaderComponent implements AfterViewInit{
-  @Input() selectButtonText = 'Выберите файл';
-  @Input() selectFilesButtonType: 'button' | 'menu' | 'reset' | 'submit' = 'button';
-  @Input() uploadButtonText = 'Начать загрузку';
-  @Input() uploadButtonType: 'button' | 'menu' | 'reset' | 'submit' = 'button';
-  @Input() allowMultipleFiles = false;
-  @Input() showUploadButton = true;
-  @Input() acceptedTypes = '*.*';
   @Input() financeResultText = '';
   @Input() targetResultText = '';
 
@@ -54,21 +51,29 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   @ViewChild('fileInput') fileInputRef: ElementRef | undefined;
   @ViewChild('projectSelectComponent') projectSelectComponent: ProjectSelectComponent | undefined;
+  // @ViewChild('projectName') projectName: MatInput | undefined;
   @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
+  // @ViewChild('workPackageName') workPackageName: MatInput | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
   @ViewChild('stepper') stepper: MatStepper | undefined;
 
   isLinear: boolean;
 
+  selectProjectVisible: boolean;
+  selectWorkPackageVisible: boolean;
+  workPackageMatRadioGroupVisible: boolean;
   secondSpinnerVisible: boolean;
   thirdSpinnerVisible: boolean;
   targetTableVisible: boolean;
   processTargetBtnVisible: boolean;
 
+  zeroFormGroup: FormGroup;
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
 
+  newProjectName: string;
+  newWorkPackageName: string;
   authorId: number = 0;
   selectedProject: Project | undefined;
   selectedWorkPackage: WorkPackage | undefined;
@@ -86,20 +91,28 @@ export class ExecutionUploaderComponent implements AfterViewInit{
               private router: Router,
               private activatedRoute: ActivatedRoute,
               public _formBuilder: FormBuilder,
+              private _snackBar: MatSnackBar,
               private targetService: TargetService) {
     this.isLinear = true;
     this.isLinear = false;
 
+    this.newProjectName = "";
+    this.newWorkPackageName = "";
     this.purposeCriteriaList = [];
     this.targetMatches = [];
 
+    this.selectProjectVisible = true;
+    this.workPackageMatRadioGroupVisible = true;
+    this.selectWorkPackageVisible = true;
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.targetTableVisible = false;
     this.processTargetBtnVisible = false;
 
     // this.secondStepStatus = false;
-
+    this.zeroFormGroup = this._formBuilder.group({
+      firstCtrl: ['', Validators.required]
+    });
     this.firstFormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required]
     });
@@ -115,6 +128,12 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.isLinear = true;
     this.isLinear = false;
 
+    this.newProjectName = "";
+    this.newWorkPackageName = "";
+
+    this.selectProjectVisible = true;
+    this.workPackageMatRadioGroupVisible = true;
+    this.selectWorkPackageVisible = true;
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.targetTableVisible = false;
@@ -158,10 +177,79 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   startProcessFile(): void {
-    if (this.selectedFiles && this.selectedWorkPackage) {
+    if (this.selectedFiles) {
       var currentFileUpload = this.selectedFiles.item(0) as File;
       this.resetResultStep();
-      this.processFinance(currentFileUpload, this.selectedWorkPackage);
+      // this.processFinance(currentFileUpload, this.selectedWorkPackage);
+      this.executionUploaderService.findWorkPackage(currentFileUpload).subscribe(
+         response => {
+          this.stepper?.next()
+          if (response.cause && response.sname == 'null') {
+            // this.createWorkPackageVisible = true;
+          } else if (response.id) {
+            this.selectProjectVisible = true;
+            this.selectWorkPackageVisible = true;
+            let allProjects: Project[] | undefined = this.projectSelectComponent?.projects;
+            let responseProject = allProjects?.find(ctr => ctr.id == response.projectId);
+            if (responseProject) {
+              this.selectedProject = responseProject;
+              this.workPackageSelectComponent?.fillAllByProjectAndSetSelected(responseProject, WorkPackage.fromJSON(response));
+              // this.selectedWorkPackage = WorkPackage.fromJSON(response);
+              // this.workPackageSelectComponent?.fillAllByProjectId(this.selectedProject);
+              // // this.workPackageSelectComponent?.fillAllByProjectAndSetSelected(responseProject, WorkPackage.fromJSON(response));
+              // // this.workPackageSelectComponent?.fillAllByProjectId(responseProject);
+              // let allWorkPackages: WorkPackage[] | undefined = this.workPackageSelectComponent?.workPackages;
+              // let responseWorkPackage = allWorkPackages?.find(ctr => ctr.id == response.id);
+              // this.selectedWorkPackage = responseWorkPackage;
+              // this.selectedWorkPackage = WorkPackage.fromJSON(response);
+
+              // console.log(response);
+              // console.log(this.selectedWorkPackage);
+            }
+
+            // this.workPackageSelectComponent?.workPackages?.forEach(ctr => {
+            //   if (ctr.id == response.id) {
+            //     this.selectedWorkPackage = ctr;
+            //   }
+            // });
+            // this.selectedWorkPackage = WorkPackage.fromJSON(response);
+            // this.projectSelectComponent?.outputSelectedProject.subscribe(this.selectedProject);
+          }
+        }
+      )
+    }
+  }
+
+  projectRadioChange(event: MatRadioChange):void {
+    if (event.value == 1) {
+      this.selectProjectVisible = true;
+      this.workPackageMatRadioGroupVisible = true;
+    } else if (event.value == 2) {
+      this.selectProjectVisible = false;
+      this.workPackageMatRadioGroupVisible = false;
+      this.selectWorkPackageVisible = false;
+    }
+  }
+
+  workPackageRadioChange(event: MatRadioChange):void {
+    if (event.value == 1) {
+      this.selectWorkPackageVisible = true;
+    } else if (event.value == 2) {
+      this.selectWorkPackageVisible = false;
+    }
+  }
+
+  setNewProjectName(event: any):void {
+    this.newProjectName = event.value;
+  }
+
+  setNewWorkPackageName(event: any):void {
+    this.newWorkPackageName = event.value;
+  }
+
+  selectOrCreateWorkPackage():void {
+    if (this.checkСompletenessWorkPackages()) {
+
     }
   }
 
@@ -255,4 +343,31 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
     return isComplete;
   }
+
+  checkСompletenessWorkPackages():boolean {
+    let isComplete = true;
+
+    const config = new MatSnackBarConfig();
+    config.panelClass = ['background-red'];
+    config.verticalPosition = "top";
+    config.horizontalPosition = 'right';
+    config.duration = 2000;
+
+    if (this.selectProjectVisible && !this.selectedProject) {
+      isComplete = false;
+      this._snackBar.open("Не выбран проект", 'x', config);
+    } else if (!this.selectProjectVisible && (this.newProjectName == "" || this.newProjectName == undefined)) {
+      isComplete = false;
+      this._snackBar.open("Не заполнен проект", 'x', config);
+    } else if (this.selectWorkPackageVisible && !this.selectedWorkPackage) {
+      isComplete = false;
+      this._snackBar.open("Не выбрано мероприятие", 'x', config);
+    } else if (!this.selectWorkPackageVisible && (this.newWorkPackageName == "" || this.newWorkPackageName == undefined)) {
+      isComplete = false;
+      this._snackBar.open("Не заполнено мероприятие", 'x', config);
+    }
+
+    return isComplete;
+  }
+
 }

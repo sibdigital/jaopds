@@ -1,35 +1,51 @@
 <mat-vertical-stepper [linear]="isLinear" #stepper>
-  <mat-step [stepControl]="firstFormGroup">
-    <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Выберите мероприятие и загрузите файл</ng-template>
-      <app-project-select [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent></app-project-select> <br>
-      <app-work-package-select [selectedWorkPackage]="selectedWorkPackage"
-                               [hidden]="!selectedProject" #workPackageSelectComponent
-                               (outputSelectedWorkPackage)="getOutputWorkPackage($event)"
-      ></app-work-package-select>
+  <mat-step [stepControl]="zeroFormGroup">
+    <form [formGroup]="zeroFormGroup">
+      <ng-template matStepLabel>Загрузите файл</ng-template>
       <div style="padding-bottom: 20px">
-        <button mat-raised-button
-                [type]="selectFilesButtonType"
-                class="file-input-button"
-                (click)="fileInput.click()"
-                [attr.aria-label]="selectButtonText"
-        >
-          <span>{{ selectButtonText }}</span>
-          <input
-            #fileInput
-            type="file"
-            style="display: none"
-            [accept]="acceptedTypes"
-            [multiple]="allowMultipleFiles"
-            (change)="filesChanged($event)"
-          />
+        <button mat-raised-button type="button" (click)="fileInput.click()">
+          Выберите файл
+          <input #fileInput type="file" style="display: none" [accept]="'*.*'" [multiple]="false" (change)="filesChanged($event)"/>
         </button>
         <span class="file-input-text" style="padding-left: 25px">{{ selectedFileText }}</span>
       </div>
       <div>
         <button
           mat-raised-button matStepperNext type="button" color = "primary" class="file-input-button" (click) = "startProcessFile()">
-          {{ uploadButtonText }}
+          Начать загрузку
+        </button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="firstFormGroup">
+    <form [formGroup]="firstFormGroup">
+      <ng-template matStepLabel>Сопоставление загружаемого результата и мероприятия из ИСУПа</ng-template>
+      <div>
+        <mat-radio-group class="radio-group">
+          <mat-radio-button class="radio-button" value="1" (change)="projectRadioChange($event)" [checked]="selectProjectVisible">Выбрать существующий проект</mat-radio-button>
+          <mat-radio-button class="radio-button" value="2" (change)="projectRadioChange($event)">Создать новый проект</mat-radio-button>
+        </mat-radio-group>
+        <app-project-select [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent [hidden]="!selectProjectVisible"></app-project-select>
+        <mat-form-field *ngIf="!selectProjectVisible" class="project-width">
+          <mat-label>Название нового проекта</mat-label>
+          <input matInput (change)="setNewProjectName($event.target)">
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-radio-group class="radio-group"  *ngIf="workPackageMatRadioGroupVisible">
+          <mat-radio-button class="radio-button" value="1" (change)="workPackageRadioChange($event)" [checked]="selectWorkPackageVisible">Выбрать существующее мероприятие</mat-radio-button>
+          <mat-radio-button class="radio-button" value="2" (change)="workPackageRadioChange($event)" [checked]="!selectWorkPackageVisible">Создать новое мероприятие</mat-radio-button>
+        </mat-radio-group>
+        <app-work-package-select [selectedWorkPackage]="selectedWorkPackage" [hidden]="!selectWorkPackageVisible" #workPackageSelectComponent (outputSelectedWorkPackage)="getOutputWorkPackage($event)"></app-work-package-select>
+        <mat-form-field *ngIf="!selectWorkPackageVisible" class="project-width">
+          <mat-label>Название результата</mat-label>
+          <input matInput (change)="setNewWorkPackageName($event.target)">
+        </mat-form-field>
+      </div>
+      <div style="padding-top: 20px">
+        <button
+          mat-raised-button type="button" color = "primary" (click) = "selectOrCreateWorkPackage()">
+          Продолжить
         </button>
       </div>
     </form>

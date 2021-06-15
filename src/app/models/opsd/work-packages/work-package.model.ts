@@ -7,10 +7,10 @@ export class WorkPackage extends Serializable {
   id: number = 0;
 
   @jsonProperty(Number)
-  type_id: number = 0;
+  typeId: number = 0;
 
   @jsonProperty(Number)
-  project_id: number = 0;
+  projectId: number = 0;
 
   @jsonProperty(String)
   subject: string = "";
@@ -19,108 +19,111 @@ export class WorkPackage extends Serializable {
   description: string | null = null;
 
   @jsonProperty(String, null)
-  due_date: string | null = null;
+  dueDate: string | null = null;
 
   @jsonProperty(Number, null)
-  category_id: number | null = null;
+  categoryId: number | null = null;
 
   @jsonProperty(Number)
-  status_id: number = 0;
+  statusId: number = 0;
 
   @jsonProperty(Number, null)
-  assigned_to_id: number | null = null;
+  assignedToId: number | null = null;
 
   @jsonProperty(Number, null)
-  priority_id: number | null = null;
+  priorityId: number | null = null;
 
   @jsonProperty(Number, null)
-  fixed_version_id: number | null = null;
+  fixedVersionId: number | null = null;
 
   @jsonProperty(Number)
-  author_id: number = 0;
+  authorId: number = 0;
 
   @jsonProperty(Number)
-  lock_version: number = 0;
+  lockVersion: number = 0;
 
   @jsonProperty(Number)
-  done_ratio: number = 0;
+  doneRatio: number = 0;
 
   @jsonProperty(Number, null)
-  estimated_hours: number | null = null;
+  estimatedHours: number | null = null;
 
   @jsonProperty(String, null)
-  created_at: string | null = null;
+  createdAt: string | null = null;
 
   @jsonProperty(String, null)
-  updated_at: string | null = null;
+  updatedAt: string | null = null;
 
   @jsonProperty(String, null)
-  start_date: string | null = null;
+  startDate: string | null = null;
 
   @jsonProperty(Number, null)
-  responsible_id: number | null = null;
+  responsibleId: number | null = null;
 
   @jsonProperty(Number, null)
-  cost_object_id: number | null = null;
+  costObjectId: number | null = null;
 
   @jsonProperty(Number, null)
   position: number | null = null;
 
   @jsonProperty(Number, null)
-  story_points: number | null = null;
+  storyPoints: number | null = null;
 
   @jsonProperty(Number, null)
-  remaining_hours: number | null = null;
+  remainingHours: number | null = null;
 
   @jsonProperty(String, null)
-  plan_type: string | null = null;
+  planType: string | null = null;
 
   @jsonProperty(Number, null)
-  contract_id: number | null = null;
+  contractId: number | null = null;
 
   @jsonProperty(Boolean, null)
-  result_agreed: boolean | null = null;
+  resultAgreed: boolean | null = null;
 
   @jsonProperty(Number, null)
-  organization_id: number | null = null;
+  organizationId: number | null = null;
 
   @jsonProperty(String, null)
-  sed_href: string | null = null;
+  sedHref: string | null = null;
 
   @jsonProperty(Number, null)
-  arbitary_object_id: number | null = null;
+  arbitaryObjectId: number | null = null;
 
   @jsonProperty(String, null)
-  plan_num_pp: string | null = null;
+  planNumPp: string | null = null;
 
   @jsonProperty(String, null)
-  raion_id: number | null = null;
+  raionId: number | null = null;
 
   @jsonProperty(Number, null)
-  required_doc_type_id: number | null = null;
+  requiredDocTypeId: number | null = null;
 
   @jsonProperty(String, null)
-  fact_due_date: string | null = null;
+  factDueDate: string | null = null;
 
   @jsonProperty(String, null)
-  first_due_date: string | null = null;
+  firstDueDate: string | null = null;
 
   @jsonProperty(String, null)
-  last_due_date: string | null = null;
+  lastDueDate: string | null = null;
 
   @jsonProperty(String, null)
-  first_start_date: string | null = null;
+  firstStartDate: string | null = null;
 
   @jsonProperty(String, null)
-  last_start_date: string | null = null;
+  lastStartDate: string | null = null;
 
   @jsonProperty(Number, null)
-  period_id: number | null = null;
+  periodId: number | null = null;
 
   @jsonProperty(Number, null)
-  control_level_id: number | null = null;
+  controlLevelId: number | null = null;
 
   @jsonProperty(Number, null)
-  outer_id: number | null = null;
+  outerId: number | null = null;
+
+  @jsonProperty(Number, null)
+  metaId: number | null = null;
 
 }

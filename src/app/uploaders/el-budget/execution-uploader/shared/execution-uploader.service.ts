@@ -25,6 +25,14 @@ export class ExecutionUploaderService {
 
   constructor(private http: HttpClient) { }
 
+  findWorkPackage(file: File): Observable<any> {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+    let data: FormData = new FormData();
+    data.append('file', file, file.name);
+    return this.http.post<any>(environment.backend_path + '/import/execution/find_work_package', data, {headers: headers});
+  }
+
   processFinance(file: File, workPackage: WorkPackage, authorId: number): Observable<JavaResponseBody> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');

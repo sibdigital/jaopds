@@ -3,6 +3,7 @@ import {WorkPackage} from "../work-package.model";
 import {WorkPackageService} from "../work-package.service";
 import {Project} from "../../projects/project.model";
 import {FormControl} from "@angular/forms";
+import {augmentAppWithServiceWorker} from "@angular-devkit/build-angular/src/utils/service-worker";
 
 @Component({
   selector: 'app-work-package-select',
@@ -19,18 +20,34 @@ export class WorkPackageSelectComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.workPackages = [];
   }
 
   fillAllByProjectId(project: Project) {
     if (project) {
       this.workPackageService.getAllByProjectId(project.id)
-        .subscribe((data) => {
+        .subscribe(
+          (data) => {
           let workPackageList : WorkPackage[] = [];
           data.forEach((item) => workPackageList.push(WorkPackage.fromJSON(item)));
           this.workPackages = workPackageList;
         })
     }
   }
+
+
+   async fillAllByProjectAndSetSelected(project: Project, workPackage: WorkPackage) {
+    if (project) {
+      let workPackageList : WorkPackage[] = [];
+      var response = await this.workPackageService.getAllByProjectId(project.id).toPromise();
+      await response.forEach((item) => workPackageList.push(WorkPackage.fromJSON(item)));
+      this.workPackages = workPackageList;
+      this.selectedWorkPackage = await this.workPackages.find(item => item.id == workPackage.id);
+    }
+      console.log(this.workPackages);
+      console.log(this.selectedWorkPackage);
+    }
+
 
   onChange(newValue: WorkPackage) {
     this.selectedWorkPackage = newValue;
