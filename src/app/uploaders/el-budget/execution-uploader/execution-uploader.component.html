@@ -21,7 +21,7 @@
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Сопоставление загружаемого результата и мероприятия из ИСУПа</ng-template>
       <div>
-        <mat-radio-group class="radio-group">
+        <mat-radio-group class="radio-group" *ngIf="!workPackageIsMatched">
           <mat-radio-button class="radio-button" value="1" (change)="projectRadioChange($event)" [checked]="selectProjectVisible">Выбрать существующий проект</mat-radio-button>
           <mat-radio-button class="radio-button" value="2" (change)="projectRadioChange($event)">Создать новый проект</mat-radio-button>
         </mat-radio-group>
@@ -32,7 +32,7 @@
         </mat-form-field>
       </div>
       <div>
-        <mat-radio-group class="radio-group"  *ngIf="workPackageMatRadioGroupVisible">
+        <mat-radio-group class="radio-group"  *ngIf="workPackageMatRadioGroupVisible && !workPackageIsMatched">
           <mat-radio-button class="radio-button" value="1" (change)="workPackageRadioChange($event)" [checked]="selectWorkPackageVisible">Выбрать существующее мероприятие</mat-radio-button>
           <mat-radio-button class="radio-button" value="2" (change)="workPackageRadioChange($event)" [checked]="!selectWorkPackageVisible">Создать новое мероприятие</mat-radio-button>
         </mat-radio-group>
@@ -43,7 +43,7 @@
         </mat-form-field>
       </div>
       <div style="padding-top: 20px">
-        <button
+        <button *ngFor="!workPackageIsMatched"
           mat-raised-button type="button" color = "primary" (click) = "selectOrCreateWorkPackage()">
           Продолжить
         </button>

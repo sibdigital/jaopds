@@ -72,6 +72,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
 
+  workPackageIsMatched: boolean;
   newProjectName: string;
   newWorkPackageName: string;
   authorId: number = 0;
@@ -101,6 +102,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.purposeCriteriaList = [];
     this.targetMatches = [];
 
+    this.workPackageIsMatched = false;
     this.selectProjectVisible = true;
     this.workPackageMatRadioGroupVisible = true;
     this.selectWorkPackageVisible = true;
@@ -126,11 +128,12 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   ngOnInit(): void {
     this.isLinear = true;
-    this.isLinear = false;
+    // this.isLinear = false;
 
     this.newProjectName = "";
     this.newWorkPackageName = "";
 
+    this.workPackageIsMatched = false;
     this.selectProjectVisible = true;
     this.workPackageMatRadioGroupVisible = true;
     this.selectWorkPackageVisible = true;
@@ -165,7 +168,6 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     const target = event.target as HTMLInputElement;
     this.selectedFiles = target.files as FileList;
     if (this.selectedFiles) {
-      this.isLinear = false;
       const numSelectedFiles = this.selectedFiles.length;
       this.selectedFileText =
         numSelectedFiles === 1
@@ -178,6 +180,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   startProcessFile(): void {
     if (this.selectedFiles) {
+      this.isLinear = false;
+
       var currentFileUpload = this.selectedFiles.item(0) as File;
       this.resetResultStep();
       // this.processFinance(currentFileUpload, this.selectedWorkPackage);
@@ -197,6 +201,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   setProjectAndWorkPackageInSelect(response: WorkPackage){
     try {
+      this.workPackageIsMatched = true;
+      this.workPackageSelectComponent?.disableSelect();
+      this.projectSelectComponent?.disableSelect();
       this.selectProjectVisible = true;
       this.selectWorkPackageVisible = true;
       this.projectSelectComponent?.getAllProjectsAndSetSelectedById(response.projectId);
@@ -258,6 +265,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   resetResultStep():void {
+    this.workPackageSelectComponent?.enableSelect();
+    this.projectSelectComponent?.enableSelect();
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.financeResultText = "";
