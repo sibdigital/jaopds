@@ -39,4 +39,18 @@ export class ProjectSelectComponent implements OnInit {
     );
   }
 
+  getAllProjectsAndSetSelectedById(projectId: number) {
+    this.projectService.getAll().toPromise().then(
+        (data) => {
+          let projectList: Project[] = [];
+          data.forEach((item) => {
+            projectList.push(Project.fromJSON(item));
+          });
+
+          this.projects = projectList;
+          this.selectedProject = this.projects.find(item => item.id == projectId);
+        }
+    );
+  }
+
 }

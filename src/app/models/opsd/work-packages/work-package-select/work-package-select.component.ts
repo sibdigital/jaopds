@@ -4,6 +4,7 @@ import {WorkPackageService} from "../work-package.service";
 import {Project} from "../../projects/project.model";
 import {FormControl} from "@angular/forms";
 import {augmentAppWithServiceWorker} from "@angular-devkit/build-angular/src/utils/service-worker";
+import {error} from "@angular/compiler/src/util";
 
 @Component({
   selector: 'app-work-package-select',
@@ -36,16 +37,13 @@ export class WorkPackageSelectComponent implements OnInit {
   }
 
 
-   async fillAllByProjectAndSetSelected(project: Project, workPackage: WorkPackage) {
-    if (project) {
-      let workPackageList : WorkPackage[] = [];
-      var response = await this.workPackageService.getAllByProjectId(project.id).toPromise();
-      await response.forEach((item) => workPackageList.push(WorkPackage.fromJSON(item)));
-      this.workPackages = workPackageList;
-      this.selectedWorkPackage = await this.workPackages.find(item => item.id == workPackage.id);
-    }
-      console.log(this.workPackages);
-      console.log(this.selectedWorkPackage);
+  fillAllByProjectIdAndSetSelected(projectId: number, workPackage: WorkPackage) {
+    let workPackageList : WorkPackage[] = [];
+    this.workPackageService.getAllByProjectId(projectId).toPromise().then((response) => {
+        response.forEach((item) => workPackageList.push(WorkPackage.fromJSON(item)));
+        this.workPackages = workPackageList;
+        this.selectedWorkPackage = this.workPackages.find(item => item.id == workPackage.id);
+      })
     }
 
 

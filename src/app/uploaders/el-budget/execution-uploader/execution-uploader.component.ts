@@ -183,40 +183,26 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       // this.processFinance(currentFileUpload, this.selectedWorkPackage);
       this.executionUploaderService.findWorkPackage(currentFileUpload).subscribe(
          response => {
-          this.stepper?.next()
           if (response.cause && response.sname == 'null') {
             // this.createWorkPackageVisible = true;
           } else if (response.id) {
-            this.selectProjectVisible = true;
-            this.selectWorkPackageVisible = true;
-            let allProjects: Project[] | undefined = this.projectSelectComponent?.projects;
-            let responseProject = allProjects?.find(ctr => ctr.id == response.projectId);
-            if (responseProject) {
-              this.selectedProject = responseProject;
-              this.workPackageSelectComponent?.fillAllByProjectAndSetSelected(responseProject, WorkPackage.fromJSON(response));
-              // this.selectedWorkPackage = WorkPackage.fromJSON(response);
-              // this.workPackageSelectComponent?.fillAllByProjectId(this.selectedProject);
-              // // this.workPackageSelectComponent?.fillAllByProjectAndSetSelected(responseProject, WorkPackage.fromJSON(response));
-              // // this.workPackageSelectComponent?.fillAllByProjectId(responseProject);
-              // let allWorkPackages: WorkPackage[] | undefined = this.workPackageSelectComponent?.workPackages;
-              // let responseWorkPackage = allWorkPackages?.find(ctr => ctr.id == response.id);
-              // this.selectedWorkPackage = responseWorkPackage;
-              // this.selectedWorkPackage = WorkPackage.fromJSON(response);
-
-              // console.log(response);
-              // console.log(this.selectedWorkPackage);
-            }
-
-            // this.workPackageSelectComponent?.workPackages?.forEach(ctr => {
-            //   if (ctr.id == response.id) {
-            //     this.selectedWorkPackage = ctr;
-            //   }
-            // });
-            // this.selectedWorkPackage = WorkPackage.fromJSON(response);
-            // this.projectSelectComponent?.outputSelectedProject.subscribe(this.selectedProject);
+              this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response));
+              this.stepper?.next();
+              this.processFinance(currentFileUpload, WorkPackage.fromJSON(response));
           }
         }
       )
+    }
+  }
+
+  setProjectAndWorkPackageInSelect(response: WorkPackage){
+    try {
+      this.selectProjectVisible = true;
+      this.selectWorkPackageVisible = true;
+      this.projectSelectComponent?.getAllProjectsAndSetSelectedById(response.projectId);
+      this.workPackageSelectComponent?.fillAllByProjectIdAndSetSelected(response.projectId, response);
+    } catch (error) {
+      this._snackBar.open(error);
     }
   }
 
@@ -248,8 +234,26 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   selectOrCreateWorkPackage():void {
-    if (this.checkСompletenessWorkPackages()) {
+    if (this.checkСompletenessWorkPackages() && this.selectedFiles ) {
+      var currentFileUpload = this.selectedFiles.item(0) as File;
 
+      if (this.selectWorkPackageVisible) {
+        if (this.selectedWorkPackage) {
+          this.processFinance(currentFileUpload, this.selectedWorkPackage);
+          this.stepper?.next();
+        }
+      } else {
+          var projectId = (this.selectProjectVisible) ? this.selectedProject?.id : 0;
+          var projectName = (this.selectProjectVisible) ? "" : this.newProjectName;
+          this.executionUploaderService.createWorkPackage(currentFileUpload, this.newWorkPackageName, projectId, projectName, this.authorId).subscribe(
+            response => {
+              if (response.id) {
+                this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response))
+                this.stepper?.next();
+                this.processFinance(currentFileUpload, WorkPackage.fromJSON(response));
+              }
+            });
+      }
     }
   }
 
@@ -347,27 +351,31 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   checkСompletenessWorkPackages():boolean {
     let isComplete = true;
 
+    if (this.selectProjectVisible && !this.selectedProject) {
+      isComplete = false;
+      this.showMessage("Не выбран проект");
+    } else if (!this.selectProjectVisible && (this.newProjectName == "" || this.newProjectName == undefined)) {
+      isComplete = false;
+      this.showMessage("Не заполнен проект");
+    } else if (this.selectWorkPackageVisible && !this.selectedWorkPackage) {
+      isComplete = false;
+      this.showMessage("Не выбрано мероприятие");
+    } else if (!this.selectWorkPackageVisible && (this.newWorkPackageName == "" || this.newWorkPackageName == undefined)) {
+      isComplete = false;
+      this.showMessage("Не заполнено мероприятие");
+    }
+
+    return isComplete;
+  }
+
+  showMessage(message: string) : void {
     const config = new MatSnackBarConfig();
     config.panelClass = ['background-red'];
     config.verticalPosition = "top";
     config.horizontalPosition = 'right';
     config.duration = 2000;
 
-    if (this.selectProjectVisible && !this.selectedProject) {
-      isComplete = false;
-      this._snackBar.open("Не выбран проект", 'x', config);
-    } else if (!this.selectProjectVisible && (this.newProjectName == "" || this.newProjectName == undefined)) {
-      isComplete = false;
-      this._snackBar.open("Не заполнен проект", 'x', config);
-    } else if (this.selectWorkPackageVisible && !this.selectedWorkPackage) {
-      isComplete = false;
-      this._snackBar.open("Не выбрано мероприятие", 'x', config);
-    } else if (!this.selectWorkPackageVisible && (this.newWorkPackageName == "" || this.newWorkPackageName == undefined)) {
-      isComplete = false;
-      this._snackBar.open("Не заполнено мероприятие", 'x', config);
-    }
-
-    return isComplete;
+    this._snackBar.open(message, 'x', config);
   }
 
 }

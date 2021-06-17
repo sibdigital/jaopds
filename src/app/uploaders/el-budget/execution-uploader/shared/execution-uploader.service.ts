@@ -33,6 +33,20 @@ export class ExecutionUploaderService {
     return this.http.post<any>(environment.backend_path + '/import/execution/find_work_package', data, {headers: headers});
   }
 
+  createWorkPackage(file: File, workPackageName: string, projectId: number | undefined, projectName: string, authorId: number): Observable<any> {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    let data: FormData = new FormData();
+    data.append('file', file, file.name);
+    let params = new HttpParams()
+      .set("workPackageName", workPackageName)
+      .set("projectId", (projectId == undefined) ? 0 : projectId)
+      .set("projectName", projectName)
+      .set("authorId", authorId);
+
+    return this.http.post<any>(environment.backend_path + '/import/execution/create_work_package', data, {headers: headers, params: params});
+  }
+
   processFinance(file: File, workPackage: WorkPackage, authorId: number): Observable<JavaResponseBody> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
