@@ -93,7 +93,7 @@ export class WorkPackage extends Serializable {
   @jsonProperty(String, null)
   planNumPp: string | null = null;
 
-  @jsonProperty(String, null)
+  @jsonProperty(Number, null)
   raionId: number | null = null;
 
   @jsonProperty(Number, null)
