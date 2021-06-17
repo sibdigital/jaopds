@@ -1,8 +1,11 @@
 <mat-form-field appearance="fill" style="width: 500px">
   <mat-label>Выберите мероприятия/КТ</mat-label>
-  <mat-select  [(ngModel)]="selectedWorkPackage" (ngModelChange) = "onChange($event)">
+  <mat-select  [(ngModel)]="selectedWorkPackage" (ngModelChange) = "onChange($event)" [disabled]="disabled">
     <mat-option *ngFor="let workPackage of workPackages" [value]="workPackage">
       {{workPackage.subject}}
     </mat-option>
   </mat-select>
+  <button mat-icon-button mat-b matSuffix (click)="openWorkPackage($event)">
+    <mat-icon>open_in_new</mat-icon>
+  </button>
 </mat-form-field>

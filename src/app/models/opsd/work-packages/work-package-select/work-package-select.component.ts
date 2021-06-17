@@ -5,6 +5,7 @@ import {Project} from "../../projects/project.model";
 import {FormControl} from "@angular/forms";
 import {augmentAppWithServiceWorker} from "@angular-devkit/build-angular/src/utils/service-worker";
 import {error} from "@angular/compiler/src/util";
+import {environment} from "../../../../../environments/environment";
 
 @Component({
   selector: 'app-work-package-select',
@@ -16,6 +17,7 @@ export class WorkPackageSelectComponent implements OnInit {
   @Input() selectedWorkPackage: WorkPackage | undefined;
   @Output() outputSelectedWorkPackage = new EventEmitter<any>();
   workPackages: WorkPackage[] | undefined;
+  disabled: boolean = false;
 
   constructor(private workPackageService: WorkPackageService) {
   }
@@ -50,6 +52,21 @@ export class WorkPackageSelectComponent implements OnInit {
   onChange(newValue: WorkPackage) {
     this.selectedWorkPackage = newValue;
     this.outputSelectedWorkPackage.emit(newValue)
+  }
+
+  openWorkPackage(event: any){
+    event.stopPropagation();
+    if (this.selectedWorkPackage) {
+      window.open(environment.url + "/projects/" + this.selectedWorkPackage?.projectId + "/work_packages/" + this.selectedWorkPackage?.id, "_blank");
+    }
+  }
+
+  disableSelect(){
+    this.disabled = true;
+  }
+
+  enableSelect(){
+    this.disabled = false;
   }
 
 }

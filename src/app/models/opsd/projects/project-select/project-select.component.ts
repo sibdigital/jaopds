@@ -1,7 +1,7 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {Project} from "../project.model";
 import {ProjectService} from "../project.service";
-import {Observable} from "rxjs";
+import {environment} from "../../../../../environments/environment";
 
 @Component({
   selector: 'app-project-select',
@@ -13,6 +13,7 @@ export class ProjectSelectComponent implements OnInit {
   projects: Project[] | undefined;
   @Input() selectedProject: Project | undefined;
   @Output() outputSelectedProject = new EventEmitter<any>();
+  disabled: boolean = false;
 
   constructor(private projectService: ProjectService) {
   }
@@ -53,4 +54,18 @@ export class ProjectSelectComponent implements OnInit {
     );
   }
 
+  openProject(event: any){
+    event.stopPropagation();
+    if (this.selectedProject) {
+      window.open(environment.url + "/projects/" + this.selectedProject?.identifier, "_blank");
+    }
+  }
+
+  disableSelect() {
+    this.disabled = true;
+  }
+
+  enableSelect() {
+    this.disabled = false;
+  }
 }

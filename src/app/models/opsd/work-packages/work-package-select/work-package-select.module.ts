@@ -4,6 +4,8 @@ import {WorkPackageSelectComponent} from "./work-package-select.component";
 import {MatSelectModule} from "@angular/material/select";
 import {MatOptionModule} from "@angular/material/core";
 import {FormsModule} from "@angular/forms";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
 
 
 
@@ -17,7 +19,9 @@ import {FormsModule} from "@angular/forms";
     CommonModule,
     FormsModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+    MatIconModule,
+    MatButtonModule
   ]
 })
 export class WorkPackageSelectModule { }
