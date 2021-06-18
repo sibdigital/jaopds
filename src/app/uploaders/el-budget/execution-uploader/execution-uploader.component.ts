@@ -9,7 +9,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from "../../../models/opsd/projects/project.model";
 import {WorkPackageSelectComponent} from "../../../models/opsd/work-packages/work-package-select/work-package-select.component";
 // import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
-import {JavaResponseBody} from "../../../models/java-response-body/java-response-body.model";
+import {JavaResponseBody} from "../../../models/java-response-body.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PurposeCriteria} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria.model";
 import {PurposeCriteriaViewComponent} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-view/purpose-criteria-view.component";
@@ -25,16 +25,20 @@ import {MatRadioChange} from "@angular/material/radio";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 import {MatInput} from "@angular/material/input";
 import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
+import {TargetMatch} from "../../../models/target-match.model";
+import {environment} from "../../../../environments/environment";
+import {CostObject} from "../../../models/opsd/cost-objects/cost-object.model";
 
-interface TargetMatch {
-  purposeCriteria: PurposeCriteria;
-  target: Target | undefined;
-
-  // constructor(purposeCriteria: PurposeCriteria, target: Target | undefined) {
-  //   this.purposeCriteria  = purposeCriteria,
-  //   this.target = target;
-  // }
-}
+// interface TargetMatch {
+//   purposeCriteria: PurposeCriteria;
+//   target: Target | undefined;
+//   createNewTarget: boolean;
+//
+//   // constructor(purposeCriteria: PurposeCriteria, target: Target | undefined) {
+//   //   this.purposeCriteria  = purposeCriteria,
+//   //   this.target = target;
+//   // }
+// }
 
 
 @Component({
@@ -53,6 +57,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @ViewChild('projectSelectComponent') projectSelectComponent: ProjectSelectComponent | undefined;
   // @ViewChild('projectName') projectName: MatInput | undefined;
   @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
+  @ViewChild('targetSelectComponent') targetSelectComponent: TargetSelectComponent | undefined;
   // @ViewChild('workPackageName') workPackageName: MatInput | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
   @ViewChild('stepper') stepper: MatStepper | undefined;
@@ -66,6 +71,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   thirdSpinnerVisible: boolean;
   targetTableVisible: boolean;
   processTargetBtnVisible: boolean;
+  disableTargetToggle: boolean = false;
 
   zeroFormGroup: FormGroup;
   firstFormGroup: FormGroup;
@@ -78,6 +84,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   authorId: number = 0;
   selectedProject: Project | undefined;
   selectedWorkPackage: WorkPackage | undefined;
+  selectedCostObject: CostObject | undefined;
   selectedFiles: FileList | undefined;
   selectedFileText = '';
 
@@ -85,7 +92,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   targetsByProject: Target[] | undefined;
   purposeCriteriaList: PurposeCriteria[];
 
-  displayedColumns: string[] = ['el-budget', 'opsd'];
+  displayedColumns: string[] = ['el-budget', 'opsd', 'slider'];
 
 
   constructor(private executionUploaderService: ExecutionUploaderService,
@@ -128,7 +135,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   ngOnInit(): void {
     this.isLinear = true;
-    // this.isLinear = false;
+    this.isLinear = false;
 
     this.newProjectName = "";
     this.newWorkPackageName = "";
@@ -140,6 +147,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.targetTableVisible = false;
+    this.targetTableVisible = true;
     this.processTargetBtnVisible = false;
 
     this.activatedRoute.queryParams.subscribe(params => {
@@ -277,10 +285,13 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.executionUploaderService.processFinance(file, workPackage, this.authorId)
       .subscribe(
     response => {
-          this.secondSpinnerVisible = false;
-          this.financeResultText = response.cause;
-          this.stepper?.next()
-          this.matchPurposeCriteria(file, workPackage);
+          if (response.id) {
+            this.secondSpinnerVisible = false;
+            this.financeResultText = "Бюджет успешно сохранен";
+            this.selectedCostObject = response;
+            this.stepper?.next()
+            this.matchPurposeCriteria(file, workPackage);
+          }
         },
     error => {
           this.secondSpinnerVisible = false;
@@ -297,20 +308,21 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.executionUploaderService.processPurposeCriteria(file, workPackage)
       .subscribe(
         (response:TargetMatch[]) => {
-                let completenessTargets = this.checkСompletenessTargets(response);
-                if (completenessTargets) {
-                  this.processTarget(response);
-                } else {
-                  this.thirdSpinnerVisible = false;
-                  this.targetTableVisible = true;
-                  this.processTargetBtnVisible = true;
-                  if (this.selectedProject) {
-                    this.targetService.getAllByProjectId(this.selectedProject.id)
-                      .subscribe((data) => this.targetsByProject = data);
-                  }
-                  this.targetMatches = response;
-                }
-              },
+          response.forEach(match => {match.createNewTarget = false;});
+          let completenessTargets = this.checkСompletenessTargets(response);
+          if (completenessTargets) {
+            this.processTarget(response);
+          } else {
+            this.thirdSpinnerVisible = false;
+            this.targetTableVisible = true;
+            this.processTargetBtnVisible = true;
+            if (this.projectSelectComponent?.selectedProject) {
+              this.targetService.getAllByProjectId(this.projectSelectComponent?.selectedProject.id)
+                .subscribe((data) => this.targetsByProject = data);
+            }
+            this.targetMatches = response;
+          }
+        },
         error => {
                 this.thirdSpinnerVisible = false;
                 this.targetResultText = "Не удалось загрузить целевые показатели. ";
@@ -322,12 +334,16 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   processTarget(targetMatches: TargetMatch[]) {
-    if (this.selectedWorkPackage) {
-      this.executionUploaderService.processTargets(targetMatches, this.selectedWorkPackage, this.authorId)
+    if (this.workPackageSelectComponent?.selectedWorkPackage) {
+      this.executionUploaderService.processTargets(targetMatches, this.workPackageSelectComponent?.selectedWorkPackage, this.authorId)
         .subscribe(
           (response) => {
-                  this.thirdSpinnerVisible = false;
-                  this.targetResultText = response.cause;
+            for (var row in this.targetMatchTable?.rows) {
+              this.targetSelectComponent?.disableSelect();
+            }
+            this.thirdSpinnerVisible = false;
+            this.disableTargetToggle = true;
+            this.targetResultText = response.cause;
         },
           error => {
                   this.thirdSpinnerVisible = false;
@@ -340,16 +356,22 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   continueProcessTarget() {
-    this.thirdSpinnerVisible = true;
-    this.processTargetBtnVisible = false;
-    this.targetTableVisible = false;
-    this.processTarget(this.targetMatches);
+    if (this.checkСompletenessTargets(this.targetMatches)) {
+      this.thirdSpinnerVisible = true;
+      this.processTargetBtnVisible = false;
+      // this.targetTableVisible = false;
+      this.processTarget(this.targetMatches);
+    } else {
+      this._snackBar.open("Не везде установлено сопоставление целевых показателей!");
+    }
   }
 
   checkСompletenessTargets(targetMatches: TargetMatch[]) {
     let isComplete = true;
     targetMatches.forEach(targetMatch => {
-      if (!targetMatch.target) {
+      if (targetMatch.createNewTarget && (targetMatch.newTargetName == "" || targetMatch.newTargetName == null)) {
+        isComplete = false;
+      } else if (!targetMatch.createNewTarget && !targetMatch.target) {
         isComplete = false;
       }
     });
@@ -387,4 +409,17 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this._snackBar.open(message, 'x', config);
   }
 
+  changeToggle(targetMatch: TargetMatch) {
+    targetMatch.createNewTarget = !targetMatch.createNewTarget;
+  }
+
+  changeTargetName(targetMatch: TargetMatch, name: String) {
+    targetMatch.newTargetName = name;
+  }
+
+  openCostObject(event: any) {
+    if (this.selectedCostObject) {
+      window.open(environment.url + "/cost_objects/" + this.selectedCostObject?.id, "_blank");
+    }
+  }
 }

@@ -1,5 +1,7 @@
 <mat-form-field>
-  <mat-select [(ngModel)]="selectedTarget" (ngModelChange) = "onChange($event)" [compareWith]="compareFn">
+  <mat-label>Выберите целевой показатель</mat-label>
+  <mat-select [(ngModel)]="selectedTarget" (ngModelChange) = "onChange($event)" [compareWith]="compareFn"
+              [disabled]="disabled">
     <mat-option *ngFor="let target of targets" [value] = "target">
       {{target.name}}
     </mat-option>

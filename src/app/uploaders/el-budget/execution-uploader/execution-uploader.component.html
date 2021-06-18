@@ -20,7 +20,7 @@
   <mat-step [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <ng-template matStepLabel>Сопоставление загружаемого результата и мероприятия из ИСУПа</ng-template>
-      <div>
+      <div style="padding-bottom: 20px">
         <mat-radio-group class="radio-group" *ngIf="!workPackageIsMatched">
           <mat-radio-button class="radio-button" value="1" (change)="projectRadioChange($event)" [checked]="selectProjectVisible">Выбрать существующий проект</mat-radio-button>
           <mat-radio-button class="radio-button" value="2" (change)="projectRadioChange($event)">Создать новый проект</mat-radio-button>
@@ -43,7 +43,7 @@
         </mat-form-field>
       </div>
       <div style="padding-top: 20px">
-        <button *ngFor="!workPackageIsMatched"
+        <button *ngIf="!workPackageIsMatched"
           mat-raised-button type="button" color = "primary" (click) = "selectOrCreateWorkPackage()">
           Продолжить
         </button>
@@ -54,7 +54,16 @@
     <form [formGroup]="secondFormGroup">
       <ng-template matStepLabel>Загрузка финансового обеспечения</ng-template>
       <mat-spinner *ngIf="secondSpinnerVisible" [diameter]="30"></mat-spinner>
-      <span>{{ financeResultText }}</span>
+      <mat-form-field class="budget-class" appearance="fill" style="width: 500px" *ngIf="selectedCostObject">
+        <mat-label>Бюджет</mat-label>
+        <input matInput [value]="selectedCostObject.subject" disabled>
+        <button mat-icon-button matSuffix (click)="openCostObject($event)">
+          <mat-icon>open_in_new</mat-icon>
+        </button>
+      </mat-form-field>
+      <div>
+        <span>{{ financeResultText }}</span>
+      </div>
     </form >
   </mat-step>
   <mat-step>
@@ -73,9 +82,23 @@
         <ng-container matColumnDef="opsd">
           <th mat-header-cell *matHeaderCellDef>ИСУП</th>
           <td mat-cell *matCellDef="let targetMatch">
-            <app-target-select [targets]="targetsByProject" [selectedTarget]="targetMatch.target" (outputSelectedTarget)="getOutputTarget($event, targetMatch)" target-select></app-target-select>
+            <app-target-select [targets]="targetsByProject" [selectedTarget]="targetMatch.target"
+                               (outputSelectedTarget)="getOutputTarget($event, targetMatch)" target-select
+                                [hidden]="targetMatch.createNewTarget" #targetSelectComponent></app-target-select>
+            <mat-form-field class="new-target-name" *ngIf="targetMatch.createNewTarget">
+              <mat-label>Название нового показателя</mat-label>
+              <input #targetNameInput matInput (change)="changeTargetName(targetMatch, targetNameInput.value)">
+            </mat-form-field>
           </td>
         </ng-container>
+
+        <ng-container matColumnDef="slider">
+          <th mat-header-cell *matHeaderCellDef>Создать показатель</th>
+          <td mat-cell *matCellDef="let targetMatch">
+            <mat-slide-toggle (change)="changeToggle(targetMatch)" [disabled]="disableTargetToggle" ></mat-slide-toggle>
+          </td>
+        </ng-container>
+
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
         <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
       </table>

@@ -20,6 +20,9 @@ import {MatFormFieldControl, MatFormFieldModule} from "@angular/material/form-fi
 import {MatInput, MatInputModule} from "@angular/material/input";
 import {CommonModule} from "@angular/common";
 import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatSlideToggle, MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -44,6 +47,8 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     MatFormFieldModule,
     MatInputModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
+    MatIconModule,
 
     ProjectSelectModule,
     WorkPackageSelectModule,

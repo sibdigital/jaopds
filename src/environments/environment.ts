@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  backend_path: "//localhost:8073/jopsd"
+  backend_path: "//localhost:8073/jopsd",
+  url: "http://localhost:3000"
 };
 
 /*

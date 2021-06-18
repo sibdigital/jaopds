@@ -15,6 +15,7 @@ export class TargetSelectComponent implements OnInit {
   @Input() targets: Target[] | undefined;
   @Input() selectedTarget: Target | undefined;
   @Output() outputSelectedTarget = new EventEmitter<any>();
+  disabled: boolean = false;
 
   constructor(private targetService: TargetService) { }
 
@@ -41,6 +42,14 @@ export class TargetSelectComponent implements OnInit {
 
   compareFn(c1: Target, c2: Target): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
+
+  disableSelect() {
+    this.disabled = true;
+  }
+
+  enableSelect() {
+    this.disabled = false;
   }
 
 }

@@ -38,7 +38,23 @@ mat-table__wrapper .mat-table {
 .mat-column-opsd {
   //white-space: unset !important;
   //flex: 0 0 50% !important;
-  width: 50%;
+  width: 45%;
+}
+
+.new-target-name {
+  width: 100%;
+}
+
+.mat-column-slider {
+  //white-space: unset !important;
+  //flex: 0 0 50% !important;
+  width: 5%;
+  align-self: center;
+  text-align: center;
+}
+
+.mat-cell .mat-column-slider {
+  justify-content: center !important;
 }
 
 .radio-group{
@@ -53,5 +69,17 @@ mat-table__wrapper .mat-table {
 
 .project-width {
   width: 50%;
+}
+
+::ng-deep .budget-class input.mat-input-element  {
+  color: black;
+}
+
+.budget-class .mat-icon {
+  color: rgba(0,0,0,.54);
+}
+
+.budget-class .mat-icon-button:hover .mat-icon {
+  color: black;
 }
 

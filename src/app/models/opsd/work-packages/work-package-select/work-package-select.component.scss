@@ -5,3 +5,7 @@
 .mat-icon-button:hover .mat-icon {
   color: #000000;
 }
+
+::ng-deep .mat-select-value-text {
+  color: black;
+}

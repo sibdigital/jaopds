@@ -1,6 +1,6 @@
-<mat-form-field appearance="fill" style="width: 500px">
+<mat-form-field class="readonly-wrapper" appearance="fill" style="width: 500px">
   <mat-label>Выберите проект</mat-label>
-  <mat-select [(ngModel)]="selectedProject" (ngModelChange) = "onChange($event)" [disabled]="disabled">
+  <mat-select class="readonly-block" [(ngModel)]="selectedProject" (ngModelChange) = "onChange($event)" [disabled]="disabled">
     <mat-option *ngFor="let project of projects" [value]="project">
       {{project.name}}
     </mat-option>
