@@ -3,12 +3,13 @@ import {Target} from "../target.model";
 import {Project} from "../../projects/project.model";
 import {TargetService} from "../target.service";
 import {FormControl} from "@angular/forms";
+import {environment} from "../../../../../environments/environment";
 
 
 @Component({
   selector: 'app-target-select',
   templateUrl: './target-select.component.html',
-  styleUrls: ['./target-select.component.css']
+  styleUrls: ['./target-select.component.scss']
 })
 export class TargetSelectComponent implements OnInit {
 
@@ -50,6 +51,13 @@ export class TargetSelectComponent implements OnInit {
 
   enableSelect() {
     this.disabled = false;
+  }
+
+  openTarget(event: any){
+    event.stopPropagation();
+    if (this.selectedTarget) {
+      window.open(environment.url + "/projects/" + this.selectedTarget?.projectId + "/targets/" + this.selectedTarget.id + "/edit", "_blank");
+    }
   }
 
 }

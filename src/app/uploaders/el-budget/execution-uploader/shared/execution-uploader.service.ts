@@ -69,12 +69,12 @@ export class ExecutionUploaderService {
     return this.http.post<TargetMatch[]>(environment.backend_path + '/import/execution/match_purpose_criteria', data, {headers: headers});
   }
 
-  processTargets(targetMatches: TargetMatch[], workPackage: WorkPackage, authorId: number): Observable<JavaResponseBody> {
+  processTargets(targetMatches: TargetMatch[], workPackage: WorkPackage, authorId: number): Observable<TargetMatch[]> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
     let params = new HttpParams().set("workPackageId", workPackage.id)
                                  .set("authorId", (authorId) ? authorId : 0);
 
-    return this.http.post<JavaResponseBody>(environment.backend_path + '/import/execution/process_targets', targetMatches, {headers: headers, params: params});
+    return this.http.post<TargetMatch[]>(environment.backend_path + '/import/execution/process_targets', targetMatches, {headers: headers, params: params});
   }
 }

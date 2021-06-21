@@ -5,6 +5,8 @@ import {FormsModule} from "@angular/forms";
 import {MatSelectModule} from "@angular/material/select";
 import {MatOptionModule} from "@angular/material/core";
 import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
 
 
 @NgModule({
@@ -16,7 +18,9 @@ import {MatFormFieldModule} from "@angular/material/form-field";
     FormsModule,
     MatSelectModule,
     MatOptionModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule
   ],
   exports: [
     TargetSelectComponent

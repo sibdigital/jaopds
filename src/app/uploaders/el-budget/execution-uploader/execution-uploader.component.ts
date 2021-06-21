@@ -309,6 +309,13 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       .subscribe(
         (response:TargetMatch[]) => {
           response.forEach(match => {match.createNewTarget = false;});
+
+          if (this.projectSelectComponent?.selectedProject) {
+            this.targetService.getAllByProjectId(this.projectSelectComponent?.selectedProject.id)
+              .subscribe((data) => this.targetsByProject = data);
+          }
+
+          this.targetMatches = response;
           let completenessTargets = this.checkСompletenessTargets(response);
           if (completenessTargets) {
             this.processTarget(response);
@@ -316,11 +323,6 @@ export class ExecutionUploaderComponent implements AfterViewInit{
             this.thirdSpinnerVisible = false;
             this.targetTableVisible = true;
             this.processTargetBtnVisible = true;
-            if (this.projectSelectComponent?.selectedProject) {
-              this.targetService.getAllByProjectId(this.projectSelectComponent?.selectedProject.id)
-                .subscribe((data) => this.targetsByProject = data);
-            }
-            this.targetMatches = response;
           }
         },
         error => {
@@ -338,12 +340,17 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.executionUploaderService.processTargets(targetMatches, this.workPackageSelectComponent?.selectedWorkPackage, this.authorId)
         .subscribe(
           (response) => {
-            for (var row in this.targetMatchTable?.rows) {
-              this.targetSelectComponent?.disableSelect();
+            if (this.projectSelectComponent?.selectedProject) {
+              this.targetService.getAllByProjectId(this.projectSelectComponent?.selectedProject.id)
+                .subscribe((data) => this.targetsByProject = data);
             }
+            this.targetMatches = response;
+            // for (var row in this.targetMatchTable?.rows) {
+            //   this.targetSelectComponent?.disableSelect();
+            // }
             this.thirdSpinnerVisible = false;
             this.disableTargetToggle = true;
-            this.targetResultText = response.cause;
+            this.targetResultText = "Целевые показатели сохранены.";
         },
           error => {
                   this.thirdSpinnerVisible = false;
