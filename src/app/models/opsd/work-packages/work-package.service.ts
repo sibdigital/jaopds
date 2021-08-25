@@ -13,6 +13,6 @@ export class WorkPackageService {
 
   getAllByProjectId(projectId: number): Observable<WorkPackage[]> {
     let params = new HttpParams().set("projectId", projectId)
-    return this.http.get<WorkPackage[]>(environment.backend_path + '/work_package_list', {params: params});
+    return this.http.get<WorkPackage[]>(environment.java_app + '/work_package_list', {params: params});
   }
 }

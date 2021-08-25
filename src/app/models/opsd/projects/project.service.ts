@@ -11,7 +11,9 @@ export class ProjectService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Object[]> {
-    return this.http.get<Object[]>(environment.backend_path + '/project_list');
+    return this.http.get<Object[]>(environment.java_app + '/project_list');
+    // return this.http.get<Object[]>(environment.backend_path + '/project_list');
+
   }
 
 }

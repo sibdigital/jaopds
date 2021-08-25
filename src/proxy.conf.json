@@ -1,0 +1,7 @@
+{
+  "/jopsd/*": {
+    "target": "http://localhost:8073",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

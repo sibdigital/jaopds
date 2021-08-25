@@ -4,7 +4,10 @@
 
 export const environment = {
   production: false,
-  backend_path: "//localhost:8073/jopsd",
+  java_app: "jopsd",
+  rails_app: "isup",
+  // context_path: "jopsd",
+  // backend_path: "//localhost:8073/jopsd",
   url: "http://localhost:3000"
 };
 
