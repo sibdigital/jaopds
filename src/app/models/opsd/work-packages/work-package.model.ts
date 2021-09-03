@@ -1,16 +1,17 @@
 import {jsonProperty, Serializable} from "ts-serializable";
 import "reflect-metadata";
+import {Project} from "../projects/project.model";
 
 export class WorkPackage extends Serializable {
 
   @jsonProperty(Number)
   id: number = 0;
 
-  @jsonProperty(Number)
-  typeId: number = 0;
+  @jsonProperty(Object)
+  type: any = null;
 
-  @jsonProperty(Number)
-  projectId: number = 0;
+  @jsonProperty(Project)
+  project: Project | undefined = undefined;
 
   @jsonProperty(String)
   subject: string = "";
@@ -21,23 +22,23 @@ export class WorkPackage extends Serializable {
   @jsonProperty(String, null)
   dueDate: string | null = null;
 
-  @jsonProperty(Number, null)
-  categoryId: number | null = null;
+  @jsonProperty(Object)
+  category: any = null;
 
-  @jsonProperty(Number)
-  statusId: number = 0;
+  @jsonProperty(Object)
+  status: any = null;
 
-  @jsonProperty(Number, null)
-  assignedToId: number | null = null;
+  @jsonProperty(Object)
+  assignedTo: any = null;
 
-  @jsonProperty(Number, null)
-  priorityId: number | null = null;
+  @jsonProperty(Object)
+  priority: any = null;
 
-  @jsonProperty(Number, null)
-  fixedVersionId: number | null = null;
+  @jsonProperty(Object)
+  fixedVersion: any = null;
 
-  @jsonProperty(Number)
-  authorId: number = 0;
+  @jsonProperty(Object)
+  author: any = null;
 
   @jsonProperty(Number)
   lockVersion: number = 0;
@@ -57,14 +58,14 @@ export class WorkPackage extends Serializable {
   @jsonProperty(String, null)
   startDate: string | null = null;
 
-  @jsonProperty(Number, null)
-  responsibleId: number | null = null;
+  @jsonProperty(Object)
+  responsible: any = null;
+
+  @jsonProperty(Object)
+  costObject: any = null;
 
   @jsonProperty(Number, null)
-  costObjectId: number | null = null;
-
-  @jsonProperty(Number, null)
-  position: number | null = null;
+  position: any = null;
 
   @jsonProperty(Number, null)
   storyPoints: number | null = null;
@@ -76,28 +77,28 @@ export class WorkPackage extends Serializable {
   planType: string | null = null;
 
   @jsonProperty(Number, null)
-  contractId: number | null = null;
+  contract: any = null;
 
   @jsonProperty(Boolean, null)
   resultAgreed: boolean | null = null;
 
-  @jsonProperty(Number, null)
-  organizationId: number | null = null;
+  @jsonProperty(Object)
+  organization: any = null;
 
   @jsonProperty(String, null)
   sedHref: string | null = null;
 
-  @jsonProperty(Number, null)
-  arbitaryObjectId: number | null = null;
+  @jsonProperty(Object)
+  arbitaryObject: any = null;
 
   @jsonProperty(String, null)
   planNumPp: string | null = null;
 
-  @jsonProperty(Number, null)
-  raionId: number | null = null;
+  @jsonProperty(Object)
+  raion: any = null;
 
-  @jsonProperty(Number, null)
-  requiredDocTypeId: number | null = null;
+  @jsonProperty(Object)
+  requiredDocType: any = null;
 
   @jsonProperty(String, null)
   factDueDate: string | null = null;
@@ -114,11 +115,11 @@ export class WorkPackage extends Serializable {
   @jsonProperty(String, null)
   lastStartDate: string | null = null;
 
-  @jsonProperty(Number, null)
-  periodId: number | null = null;
+  @jsonProperty(Object)
+  period: any = null;
 
-  @jsonProperty(Number, null)
-  controlLevelId: number | null = null;
+  @jsonProperty(Object)
+  controlLevel: any = null;
 
   @jsonProperty(Number, null)
   outerId: number | null = null;

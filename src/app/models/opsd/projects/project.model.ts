@@ -15,8 +15,8 @@ export class Project extends Serializable {
   @jsonProperty(Boolean)
   public: boolean = true;
 
-  @jsonProperty(Number, null)
-  parentId: number | null = null;
+  @jsonProperty(Object)
+  parent: any = null;
 
   @jsonProperty(String, null)
   createdOn: string | null = null;
@@ -36,11 +36,11 @@ export class Project extends Serializable {
   @jsonProperty(Number, null)
   rgt: number | null = null;
 
-  @jsonProperty(Number, null)
-  projectApproveStatusId: number | null = null;
+  @jsonProperty(Object)
+  projectApproveStatus: any = null;
 
-  @jsonProperty(Number, null)
-  projectStatusId: number | null = null;
+  @jsonProperty(Object)
+  projectStatus: any = null;
 
   @jsonProperty(String, null)
   startDate: string | null = null;
@@ -48,11 +48,11 @@ export class Project extends Serializable {
   @jsonProperty(String, null)
   dueDate: string | null = null;
 
-  @jsonProperty(Number, null)
-  nationalProjectId: number | null = null;
+  @jsonProperty(Object)
+  nationalProject: any = null;
 
-  @jsonProperty(Number, null)
-  federalProjectId: number | null = null;
+  @jsonProperty(Object)
+  federalProject: any = null;
 
   @jsonProperty(String, null)
   type: string | null = null;
@@ -64,13 +64,13 @@ export class Project extends Serializable {
   factDueDate: string | null = null;
 
   @jsonProperty(Number, null)
-  investAmo0unt: number | null = null;
+  investAmount: number | null = null;
 
   @jsonProperty(Boolean, null)
   program: boolean | null = null;
 
-  @jsonProperty(Number, null)
-  addressId: number | null = null;
+  @jsonProperty(Object)
+  address: number | null = null;
 
   @jsonProperty(String, null)
   nationalProjectTarget: string | null = null;
