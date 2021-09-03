@@ -7,7 +7,8 @@ export const environment = {
   java_app: "jopsd",
   rails_app: "isup",
   // context_path: "jopsd",
-  // backend_path: "//localhost:8073/jopsd",
+  jopsd_url: "http://localhost:8073/jopsd",
+  jopsd_api: "/api",
   url: "http://localhost:3000"
 };
 

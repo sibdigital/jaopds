@@ -76,9 +76,9 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "port": 4201,
-            "proxyConfig": "src/proxy.conf.json"
-          }
+            "port": 4201
+          },
+          "evalSourceMap": false
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

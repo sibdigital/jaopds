@@ -2,6 +2,9 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {Project} from "../project.model";
 import {ProjectService} from "../project.service";
 import {environment} from "../../../../../environments/environment";
+import {BehaviorSubject, Observable} from "rxjs";
+import {scan} from "rxjs/operators";
+import {WorkPackage} from "../../work-packages/work-package.model";
 
 @Component({
   selector: 'app-project-select',
@@ -14,12 +17,22 @@ export class ProjectSelectComponent implements OnInit {
   @Input() selectedProject: Project | undefined;
   @Output() outputSelectedProject = new EventEmitter<any>();
   disabled: boolean = false;
+  limit = 20;
+  page = 0;
+  options = new BehaviorSubject<Project[]>([]);
+  totalPage = 0;
+  options$: Observable<Project[]>;
 
   constructor(private projectService: ProjectService) {
+    this.options$ = this.options.asObservable().pipe(
+      scan((acc:any, curr:any) => {
+        return [...acc, ...curr];
+      }, [])
+    );
   }
 
   ngOnInit(): void {
-    this.projects = [];
+    this.getNextBatch();
   }
 
   onChange(newValue: Project) {
@@ -27,31 +40,30 @@ export class ProjectSelectComponent implements OnInit {
     this.outputSelectedProject.emit(newValue)
   }
 
-  getAllProjectsAndSet() {
-    this.projectService.getAll().subscribe(
+  getNextBatch() {
+    this.projectService.getAllByPageAndSize(this.page, this.limit).subscribe(
       (data) => {
-          let projectList: Project[] = [];
-          data.forEach((item) => {
-            projectList.push(Project.fromJSON(item));
-          });
-
-          this.projects = projectList;
-      }
-    );
+        let projectData: Object[] = data._embedded.projects;
+        this.totalPage = data.page.totalPages;
+        let projectList: Project[] = [];
+        projectData.forEach((item) => {
+          projectList.push(Project.fromJSON(item));
+        });
+        this.options.next(projectList);
+        this.page += 1;
+      })
   }
 
-  getAllProjectsAndSetSelectedById(projectId: number) {
-    this.projectService.getAll().toPromise().then(
-        (data) => {
-          let projectList: Project[] = [];
-          data.forEach((item) => {
-            projectList.push(Project.fromJSON(item));
-          });
-
-          this.projects = projectList;
-          this.selectedProject = this.projects.find(item => item.id == projectId);
-        }
-    );
+  setProject(project: any) {
+    if (project) {
+      this.options = new BehaviorSubject<Project[]>([project]);
+      this.options$ = this.options.asObservable().pipe(
+        scan((acc:any, curr:any) => {
+          return [...acc, ...curr];
+        }, [])
+      );
+      this.selectedProject = project;
+    }
   }
 
   openProject(event: any){

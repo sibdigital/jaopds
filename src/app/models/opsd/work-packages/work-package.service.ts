@@ -12,7 +12,12 @@ export class WorkPackageService {
   constructor(private http: HttpClient) { }
 
   getAllByProjectId(projectId: number): Observable<WorkPackage[]> {
-    let params = new HttpParams().set("projectId", projectId)
-    return this.http.get<WorkPackage[]>(environment.java_app + '/work_package_list', {params: params});
+    let params = { size: 10000, projectId: projectId };
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/workPackages/search/findAllByProjectId', {params: params});
+  }
+
+  getAllByProjectIdAndPageAndSize(projectId: number, page: number, size: number) {
+    let params = {projectId: projectId, page: page, size: size, sort: 'subject'};
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/workPackages/search/findAllByProject_Id', {params: params});
   }
 }

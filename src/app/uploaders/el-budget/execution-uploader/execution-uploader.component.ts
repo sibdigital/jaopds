@@ -48,6 +48,7 @@ import {CostObject} from "../../../models/opsd/cost-objects/cost-object.model";
 })
 
 export class ExecutionUploaderComponent implements AfterViewInit{
+  @Input() workPackageResultText = '';
   @Input() financeResultText = '';
   @Input() targetResultText = '';
 
@@ -156,7 +157,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    this.projectSelectComponent?.getAllProjectsAndSet();
+    // this.projectSelectComponent?.getAllProjectsAndSet();
   }
 
   getOutputProject(outputProject: Project) {
@@ -214,8 +215,13 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.projectSelectComponent?.disableSelect();
       this.selectProjectVisible = true;
       this.selectWorkPackageVisible = true;
-      this.projectSelectComponent?.getAllProjectsAndSetSelectedById(response.projectId);
-      this.workPackageSelectComponent?.fillAllByProjectIdAndSetSelected(response.projectId, response);
+      // this.projectSelectComponent?.getAllProjectsAndSetSelectedById(response.projectId);
+
+      if (response.project) {
+        // this.workPackageSelectComponent?.fillAllByProjectIdAndSetSelected(response.project?.id, response);
+        this.projectSelectComponent?.setProject(response.project);
+        this.workPackageSelectComponent?.setWorkPackage(response);
+      }
     } catch (error) {
       this._snackBar.open(error);
     }
@@ -267,6 +273,12 @@ export class ExecutionUploaderComponent implements AfterViewInit{
                 this.stepper?.next();
                 this.processFinance(currentFileUpload, WorkPackage.fromJSON(response));
               }
+            },
+            error => {
+              this.workPackageResultText = "Не удалось создать мероприятие.";
+              if (error instanceof HttpErrorResponse) {
+                this.workPackageResultText = this.workPackageResultText + " Ошибка: " + error.status;
+              }
             });
       }
     }
@@ -277,7 +289,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.projectSelectComponent?.enableSelect();
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
-    this.financeResultText = "";
+    this.workPackageResultText = '';
+    this.financeResultText = '';
+    this.targetResultText = '';
     this.targetMatches = []
   }
 

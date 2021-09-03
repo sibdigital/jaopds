@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../../../environments/environment";
 
 @Injectable({
@@ -10,10 +10,9 @@ export class ProjectService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Object[]> {
-    return this.http.get<Object[]>(environment.java_app + '/project_list');
-    // return this.http.get<Object[]>(environment.backend_path + '/project_list');
-
+  getAllByPageAndSize(page: number, size: number) {
+    let params = {page: page, size: size, sort: 'name'};
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/projects', {params: params});
   }
 
 }

@@ -13,6 +13,6 @@ export class TargetService {
 
   getAllByProjectId(projectId: number): Observable<Target[]> {
     let params = new HttpParams().set("projectId", projectId)
-    return this.http.get<Target[]>(environment.java_app + '/target_list', {params: params});
+    return this.http.get<Target[]>(environment.jopsd_url + '/target_list', {params: params});
   }
 }
