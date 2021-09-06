@@ -23,6 +23,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatSlideToggle, MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatIconModule} from "@angular/material/icon";
+import {ProjectModalSelectorModule} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.module";
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import {MatIconModule} from "@angular/material/icon";
     ReactiveFormsModule,
     PurposeCriteriaViewModule,
     TargetSelectModule,
+    ProjectModalSelectorModule
   ]
 })
 export class ExecutionUploaderModule { }

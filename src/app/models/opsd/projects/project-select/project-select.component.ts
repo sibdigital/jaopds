@@ -41,7 +41,7 @@ export class ProjectSelectComponent implements OnInit {
   }
 
   getNextBatch() {
-    this.projectService.getAllByPageAndSize(this.page, this.limit).subscribe(
+    this.projectService.getAllByPageAndSize(this.page, this.limit, 'name').subscribe(
       (data) => {
         let projectData: Object[] = data._embedded.projects;
         this.totalPage = data.page.totalPages;

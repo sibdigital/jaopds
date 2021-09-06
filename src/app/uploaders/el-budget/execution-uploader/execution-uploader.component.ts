@@ -28,6 +28,7 @@ import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model
 import {TargetMatch} from "../../../models/target-match.model";
 import {environment} from "../../../../environments/environment";
 import {CostObject} from "../../../models/opsd/cost-objects/cost-object.model";
+import {ProjectModalSelectorComponent} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.component";
 
 // interface TargetMatch {
 //   purposeCriteria: PurposeCriteria;
@@ -55,7 +56,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @Input() outputTarget: Target | undefined;
 
   @ViewChild('fileInput') fileInputRef: ElementRef | undefined;
-  @ViewChild('projectSelectComponent') projectSelectComponent: ProjectSelectComponent | undefined;
+  // @ViewChild('projectSelectComponent') projectSelectComponent: ProjectSelectComponent | undefined;
+  @ViewChild('projectModalSelectorComponent') projectModalSelectorComponent: ProjectModalSelectorComponent | undefined;
   // @ViewChild('projectName') projectName: MatInput | undefined;
   @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
   @ViewChild('targetSelectComponent') targetSelectComponent: TargetSelectComponent | undefined;
@@ -212,14 +214,16 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     try {
       this.workPackageIsMatched = true;
       this.workPackageSelectComponent?.disableSelect();
-      this.projectSelectComponent?.disableSelect();
+      // this.projectSelectComponent?.disableSelect();
+      this.projectModalSelectorComponent?.disableChoice();
       this.selectProjectVisible = true;
       this.selectWorkPackageVisible = true;
       // this.projectSelectComponent?.getAllProjectsAndSetSelectedById(response.projectId);
 
       if (response.project) {
         // this.workPackageSelectComponent?.fillAllByProjectIdAndSetSelected(response.project?.id, response);
-        this.projectSelectComponent?.setProject(response.project);
+        // this.projectSelectComponent?.setProject(response.project);
+        this.projectModalSelectorComponent?.setProject(response.project);
         this.workPackageSelectComponent?.setWorkPackage(response);
       }
     } catch (error) {
@@ -286,7 +290,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   resetResultStep():void {
     this.workPackageSelectComponent?.enableSelect();
-    this.projectSelectComponent?.enableSelect();
+    // this.projectSelectComponent?.enableSelect();
+    this.projectModalSelectorComponent?.enableChoice();
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.workPackageResultText = '';
@@ -324,8 +329,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
         (response:TargetMatch[]) => {
           response.forEach(match => {match.createNewTarget = false;});
 
-          if (this.projectSelectComponent?.selectedProject) {
-            this.targetService.getAllByProjectId(this.projectSelectComponent?.selectedProject.id)
+          if (this.projectModalSelectorComponent?.selectedProject) {
+            this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
               .subscribe((data) => this.targetsByProject = data);
           }
 
@@ -354,8 +359,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.executionUploaderService.processTargets(targetMatches, this.workPackageSelectComponent?.selectedWorkPackage, this.authorId)
         .subscribe(
           (response) => {
-            if (this.projectSelectComponent?.selectedProject) {
-              this.targetService.getAllByProjectId(this.projectSelectComponent?.selectedProject.id)
+            if (this.projectModalSelectorComponent?.selectedProject) {
+              this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
                 .subscribe((data) => this.targetsByProject = data);
             }
             this.targetMatches = response;
