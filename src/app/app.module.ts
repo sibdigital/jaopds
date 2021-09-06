@@ -7,12 +7,10 @@ import { AppRoutingModule } from './app-routing.module';
 import {ExecutionUploaderModule} from "./uploaders/el-budget/execution-uploader/execution-uploader.module";
 import {HttpClientModule} from "@angular/common/http";
 import {FlexLayoutModule} from "@angular/flex-layout";
-import { ProjectModalSelectorComponent } from './models/opsd/projects/project-modal-selector/project-modal-selector.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ProjectModalSelectorComponent,
   ],
     imports: [
       FlexLayoutModule,
