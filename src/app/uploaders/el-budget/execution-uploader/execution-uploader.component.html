@@ -25,7 +25,8 @@
           <mat-radio-button class="radio-button" value="1" (change)="projectRadioChange($event)" [checked]="selectProjectVisible">Выбрать существующий проект</mat-radio-button>
           <mat-radio-button class="radio-button" value="2" (change)="projectRadioChange($event)">Создать новый проект</mat-radio-button>
         </mat-radio-group>
-        <app-project-select [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent [hidden]="!selectProjectVisible"></app-project-select>
+<!--        <app-project-select [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent [hidden]="!selectProjectVisible"></app-project-select>-->
+        <app-project-modal-selector [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent [hidden]="!selectProjectVisible"></app-project-modal-selector>
         <mat-form-field *ngIf="!selectProjectVisible" class="project-width">
           <mat-label>Название нового проекта</mat-label>
           <input matInput (change)="setNewProjectName($event.target)">
