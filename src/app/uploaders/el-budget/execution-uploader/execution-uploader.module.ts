@@ -24,39 +24,41 @@ import {MatSliderModule} from "@angular/material/slider";
 import {MatSlideToggle, MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatIconModule} from "@angular/material/icon";
 import {ProjectModalSelectorModule} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.module";
+import {WorkPackageModalSelectorModule} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.module";
 
 @NgModule({
   declarations: [
     ExecutionUploaderComponent
   ],
-  imports: [
-    // HttpClientModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
+    imports: [
+        // HttpClientModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
 
-    CommonModule,
-    FormsModule,
+        CommonModule,
+        FormsModule,
 
-    MatButtonModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatStepperModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatRadioModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
-    MatIconModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatStepperModule,
+        MatProgressSpinnerModule,
+        MatTableModule,
+        MatRadioModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSnackBarModule,
+        MatSlideToggleModule,
+        MatIconModule,
 
-    ProjectSelectModule,
-    WorkPackageSelectModule,
-    ReactiveFormsModule,
-    PurposeCriteriaViewModule,
-    TargetSelectModule,
-    ProjectModalSelectorModule
-  ]
+        ProjectSelectModule,
+        WorkPackageSelectModule,
+        ReactiveFormsModule,
+        PurposeCriteriaViewModule,
+        TargetSelectModule,
+        ProjectModalSelectorModule,
+        WorkPackageModalSelectorModule
+    ]
 })
 export class ExecutionUploaderModule { }

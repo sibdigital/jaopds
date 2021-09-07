@@ -37,7 +37,8 @@
           <mat-radio-button class="radio-button" value="1" (change)="workPackageRadioChange($event)" [checked]="selectWorkPackageVisible">Выбрать существующее мероприятие</mat-radio-button>
           <mat-radio-button class="radio-button" value="2" (change)="workPackageRadioChange($event)" [checked]="!selectWorkPackageVisible">Создать новое мероприятие</mat-radio-button>
         </mat-radio-group>
-        <app-work-package-select [selectedWorkPackage]="selectedWorkPackage" [hidden]="!selectWorkPackageVisible" #workPackageSelectComponent (outputSelectedWorkPackage)="getOutputWorkPackage($event)"></app-work-package-select>
+<!--        <app-work-package-select [selectedWorkPackage]="selectedWorkPackage" [hidden]="!selectWorkPackageVisible" #workPackageSelectComponent (outputSelectedWorkPackage)="getOutputWorkPackage($event)"></app-work-package-select>-->
+        <app-work-package-modal-selector [selectedWorkPackage]="selectedWorkPackage" [hidden]="!selectWorkPackageVisible" #workPackageModalSelectorComponent (outputSelectedWorkPackage)="getOutputWorkPackage($event)"></app-work-package-modal-selector>
         <mat-form-field *ngIf="!selectWorkPackageVisible" class="project-width">
           <mat-label>Название результата</mat-label>
           <input matInput (change)="setNewWorkPackageName($event.target)">

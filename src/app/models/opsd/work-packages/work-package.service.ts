@@ -20,4 +20,10 @@ export class WorkPackageService {
     let params = {projectId: projectId, page: page, size: size, sort: 'subject'};
     return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/workPackages/search/findAllByProject_Id', {params: params});
   }
+
+  getAllByProjectIdAndNameAndPageAndSizeAndSort(projectId: number, name: string, page: number, size: number, sort: string, sortDir: string) {
+    sortDir = (sortDir == '') ? 'asc' : sortDir;
+    let params = {projectId: projectId, subject: name, page: page, size: size, sort: sort.concat(',', sortDir)};
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/workPackages/search/findByProject_IdAndSubjectContainingIgnoreCase', {params: params});
+  }
 }

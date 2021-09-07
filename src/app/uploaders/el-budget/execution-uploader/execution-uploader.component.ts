@@ -29,6 +29,7 @@ import {TargetMatch} from "../../../models/target-match.model";
 import {environment} from "../../../../environments/environment";
 import {CostObject} from "../../../models/opsd/cost-objects/cost-object.model";
 import {ProjectModalSelectorComponent} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.component";
+import {WorkPackageModalSelectorComponent} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.component";
 
 // interface TargetMatch {
 //   purposeCriteria: PurposeCriteria;
@@ -59,7 +60,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   // @ViewChild('projectSelectComponent') projectSelectComponent: ProjectSelectComponent | undefined;
   @ViewChild('projectModalSelectorComponent') projectModalSelectorComponent: ProjectModalSelectorComponent | undefined;
   // @ViewChild('projectName') projectName: MatInput | undefined;
-  @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
+  // @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
+  @ViewChild('workPackageModalSelectorComponent') workPackageModalSelectorComponent: WorkPackageModalSelectorComponent | undefined;
   @ViewChild('targetSelectComponent') targetSelectComponent: TargetSelectComponent | undefined;
   // @ViewChild('workPackageName') workPackageName: MatInput | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
@@ -159,12 +161,11 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
-    // this.projectSelectComponent?.getAllProjectsAndSet();
   }
 
   getOutputProject(outputProject: Project) {
     this.selectedProject = outputProject;
-    this.workPackageSelectComponent?.fillAllByProjectId(outputProject)
+    this.workPackageModalSelectorComponent?.setProjectAndResetWorkPackage(outputProject);
   }
 
   getOutputWorkPackage(outputWorkPackage: WorkPackage) {
@@ -195,11 +196,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
       var currentFileUpload = this.selectedFiles.item(0) as File;
       this.resetResultStep();
-      // this.processFinance(currentFileUpload, this.selectedWorkPackage);
       this.executionUploaderService.findWorkPackage(currentFileUpload).subscribe(
          response => {
           if (response.cause && response.sname == 'null') {
-            // this.createWorkPackageVisible = true;
           } else if (response.id) {
               this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response));
               this.stepper?.next();
@@ -213,18 +212,14 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   setProjectAndWorkPackageInSelect(response: WorkPackage){
     try {
       this.workPackageIsMatched = true;
-      this.workPackageSelectComponent?.disableSelect();
-      // this.projectSelectComponent?.disableSelect();
       this.projectModalSelectorComponent?.disableChoice();
+      this.workPackageModalSelectorComponent?.disableChoice();
       this.selectProjectVisible = true;
       this.selectWorkPackageVisible = true;
-      // this.projectSelectComponent?.getAllProjectsAndSetSelectedById(response.projectId);
 
       if (response.project) {
-        // this.workPackageSelectComponent?.fillAllByProjectIdAndSetSelected(response.project?.id, response);
-        // this.projectSelectComponent?.setProject(response.project);
         this.projectModalSelectorComponent?.setProject(response.project);
-        this.workPackageSelectComponent?.setWorkPackage(response);
+        this.workPackageModalSelectorComponent?.setWorkPackage(response);
       }
     } catch (error) {
       this._snackBar.open(error);
@@ -289,9 +284,10 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   resetResultStep():void {
-    this.workPackageSelectComponent?.enableSelect();
+    // this.workPackageSelectComponent?.enableSelect();
     // this.projectSelectComponent?.enableSelect();
     this.projectModalSelectorComponent?.enableChoice();
+    this.workPackageModalSelectorComponent?.enableChoice();
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.workPackageResultText = '';
@@ -355,8 +351,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   processTarget(targetMatches: TargetMatch[]) {
-    if (this.workPackageSelectComponent?.selectedWorkPackage) {
-      this.executionUploaderService.processTargets(targetMatches, this.workPackageSelectComponent?.selectedWorkPackage, this.authorId)
+    if (this.workPackageModalSelectorComponent?.selectedWorkPackage) {
+      this.executionUploaderService.processTargets(targetMatches, this.workPackageModalSelectorComponent?.selectedWorkPackage, this.authorId)
         .subscribe(
           (response) => {
             if (this.projectModalSelectorComponent?.selectedProject) {
