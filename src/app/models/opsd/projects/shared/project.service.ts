@@ -20,4 +20,8 @@ export class ProjectService {
     let params = {name: name, page: page, size: size, sort: sort.concat(',', sortDir)};
     return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/projects/search/findByNameContainingIgnoreCase', {params: params});
   }
+
+  getProjectById(projectId: number) {
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/projects/' + projectId);
+  }
 }

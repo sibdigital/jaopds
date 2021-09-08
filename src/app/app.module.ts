@@ -7,6 +7,7 @@ import { AppRoutingModule } from './app-routing.module';
 import {ExecutionUploaderModule} from "./uploaders/el-budget/execution-uploader/execution-uploader.module";
 import {HttpClientModule} from "@angular/common/http";
 import {FlexLayoutModule} from "@angular/flex-layout";
+import {MppUploaderModule} from "./uploaders/mpp/mpp-uploader/mpp-uploader.module";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import {FlexLayoutModule} from "@angular/flex-layout";
       BrowserModule,
       BrowserAnimationsModule,
       ExecutionUploaderModule,
+      MppUploaderModule,
       AppRoutingModule
     ],
   providers: [],
