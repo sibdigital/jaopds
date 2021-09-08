@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation} from '@angular/core';
 import {WorkPackage} from "../work-package.model";
-import {WorkPackageService} from "../work-package.service";
+import {WorkPackageService} from "../shared/work-package.service";
 import {Project} from "../../projects/project.model";
 import {FormControl} from "@angular/forms";
 import {augmentAppWithServiceWorker} from "@angular-devkit/build-angular/src/utils/service-worker";

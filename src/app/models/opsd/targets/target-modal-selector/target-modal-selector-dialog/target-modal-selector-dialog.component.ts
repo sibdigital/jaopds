@@ -7,7 +7,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {merge, of as observableOf} from "rxjs";
 import {catchError, map, startWith, switchMap} from "rxjs/operators";
 import {MatRow} from "@angular/material/table";
-import {TargetService} from "../../target.service";
+import {TargetService} from "../../shared/target.service";
 
 @Component({
   selector: 'app-target-modal-selector-dialog',

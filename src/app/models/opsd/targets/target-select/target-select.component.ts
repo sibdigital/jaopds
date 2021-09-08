@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Target} from "../target.model";
 import {Project} from "../../projects/project.model";
-import {TargetService} from "../target.service";
+import {TargetService} from "../shared/target.service";
 import {FormControl} from "@angular/forms";
 import {environment} from "../../../../../environments/environment";
 

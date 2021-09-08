@@ -2,7 +2,7 @@ import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {Project} from "../../project.model";
 import {merge, of as observableOf} from "rxjs";
-import {ProjectService} from "../../project.service";
+import {ProjectService} from "../../shared/project.service";
 import {MatSort} from "@angular/material/sort";
 import {MatPaginator} from "@angular/material/paginator";
 import {catchError, map, startWith, switchMap} from "rxjs/operators";

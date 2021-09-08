@@ -1,6 +1,6 @@
 import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 import {Project} from "../project.model";
-import {ProjectService} from "../project.service";
+import {ProjectService} from "../shared/project.service";
 import {environment} from "../../../../../environments/environment";
 import {BehaviorSubject, Observable} from "rxjs";
 import {scan} from "rxjs/operators";
