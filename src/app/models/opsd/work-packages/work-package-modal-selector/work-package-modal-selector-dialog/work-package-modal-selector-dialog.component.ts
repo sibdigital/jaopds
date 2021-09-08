@@ -12,7 +12,7 @@ import {WorkPackage} from "../../work-package.model";
 @Component({
   selector: 'app-work-package-modal-selector-dialog',
   templateUrl: './work-package-modal-selector-dialog.component.html',
-  styleUrls: ['./work-package-modal-selector-dialog.component.css']
+  styleUrls: ['./work-package-modal-selector-dialog.component.scss']
 })
 export class WorkPackageModalSelectorDialogComponent implements OnInit {
 

@@ -12,7 +12,7 @@ import {TargetService} from "../../target.service";
 @Component({
   selector: 'app-target-modal-selector-dialog',
   templateUrl: './target-modal-selector-dialog.component.html',
-  styleUrls: ['./target-modal-selector-dialog.component.css']
+  styleUrls: ['./target-modal-selector-dialog.component.scss']
 })
 export class TargetModalSelectorDialogComponent implements OnInit {
 

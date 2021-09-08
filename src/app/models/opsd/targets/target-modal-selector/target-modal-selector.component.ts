@@ -8,7 +8,7 @@ import {TargetModalSelectorDialogComponent} from "./target-modal-selector-dialog
 @Component({
   selector: 'app-target-modal-selector',
   templateUrl: './target-modal-selector.component.html',
-  styleUrls: ['./target-modal-selector.component.css']
+  styleUrls: ['./target-modal-selector.component.scss']
 })
 export class TargetModalSelectorComponent implements OnInit {
 

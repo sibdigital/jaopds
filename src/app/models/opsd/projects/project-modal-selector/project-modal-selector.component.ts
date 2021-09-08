@@ -9,7 +9,7 @@ import {scan} from "rxjs/operators";
 @Component({
   selector: 'app-project-modal-selector',
   templateUrl: './project-modal-selector.component.html',
-  styleUrls: ['./project-modal-selector.component.css']
+  styleUrls: ['./project-modal-selector.component.scss']
 })
 export class ProjectModalSelectorComponent implements OnInit {
 

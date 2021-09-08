@@ -11,7 +11,7 @@ import {MatRow} from "@angular/material/table";
 @Component({
   selector: 'app-project-modal-selector-dialog',
   templateUrl: './project-modal-selector-dialog.component.html',
-  styleUrls: ['./project-modal-selector-dialog.component.css']
+  styleUrls: ['./project-modal-selector-dialog.component.scss']
 })
 export class ProjectModalSelectorDialogComponent implements OnInit {
 

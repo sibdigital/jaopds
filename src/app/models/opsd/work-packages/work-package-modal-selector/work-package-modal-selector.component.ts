@@ -8,7 +8,7 @@ import {WorkPackageModalSelectorDialogComponent} from "./work-package-modal-sele
 @Component({
   selector: 'app-work-package-modal-selector',
   templateUrl: './work-package-modal-selector.component.html',
-  styleUrls: ['./work-package-modal-selector.component.css']
+  styleUrls: ['./work-package-modal-selector.component.scss']
 })
 export class WorkPackageModalSelectorComponent implements OnInit {
 
