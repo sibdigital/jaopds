@@ -15,4 +15,10 @@ export class TargetService {
     let params = new HttpParams().set("projectId", projectId)
     return this.http.get<Target[]>(environment.jopsd_url + '/target_list', {params: params});
   }
+
+  getAllByProjectIdAndNameAndPageAndSizeAndSort(projectId: number, name: string, page: number, size: number, sort: string, sortDir: string) {
+    sortDir = (sortDir == '') ? 'asc' : sortDir;
+    let params = {projectId: projectId, name: name, page: page, size: size, sort: sort.concat(',', sortDir)};
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/targets/search/findByProject_IdAndNameContainingIgnoreCase', {params: params});
+  }
 }

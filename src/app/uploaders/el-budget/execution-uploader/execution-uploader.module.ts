@@ -25,6 +25,7 @@ import {MatSlideToggle, MatSlideToggleModule} from "@angular/material/slide-togg
 import {MatIconModule} from "@angular/material/icon";
 import {ProjectModalSelectorModule} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.module";
 import {WorkPackageModalSelectorModule} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.module";
+import {TargetModalSelectorModule} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.module";
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import {WorkPackageModalSelectorModule} from "../../../models/opsd/work-packages
         PurposeCriteriaViewModule,
         TargetSelectModule,
         ProjectModalSelectorModule,
-        WorkPackageModalSelectorModule
+        WorkPackageModalSelectorModule,
+        TargetModalSelectorModule
     ]
 })
 export class ExecutionUploaderModule { }

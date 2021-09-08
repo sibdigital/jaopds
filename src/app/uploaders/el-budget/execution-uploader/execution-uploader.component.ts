@@ -30,6 +30,7 @@ import {environment} from "../../../../environments/environment";
 import {CostObject} from "../../../models/opsd/cost-objects/cost-object.model";
 import {ProjectModalSelectorComponent} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.component";
 import {WorkPackageModalSelectorComponent} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.component";
+import {TargetModalSelectorComponent} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.component";
 
 // interface TargetMatch {
 //   purposeCriteria: PurposeCriteria;
@@ -62,7 +63,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   // @ViewChild('projectName') projectName: MatInput | undefined;
   // @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
   @ViewChild('workPackageModalSelectorComponent') workPackageModalSelectorComponent: WorkPackageModalSelectorComponent | undefined;
-  @ViewChild('targetSelectComponent') targetSelectComponent: TargetSelectComponent | undefined;
+  // @ViewChild('targetSelectComponent') targetSelectComponent: TargetSelectComponent | undefined;
+  @ViewChild('targetModalSelectorComponent') targetModalSelectorComponent: TargetModalSelectorComponent | undefined;
   // @ViewChild('workPackageName') workPackageName: MatInput | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
   @ViewChild('stepper') stepper: MatStepper | undefined;
@@ -323,12 +325,12 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.executionUploaderService.processPurposeCriteria(file, workPackage)
       .subscribe(
         (response:TargetMatch[]) => {
-          response.forEach(match => {match.createNewTarget = false;});
+          response.forEach(match => {match.createNewTarget = false; match.project = this.projectModalSelectorComponent?.selectedProject});
 
-          if (this.projectModalSelectorComponent?.selectedProject) {
-            this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
-              .subscribe((data) => this.targetsByProject = data);
-          }
+          // if (this.projectModalSelectorComponent?.selectedProject) {
+          //   this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
+          //     .subscribe((data) => this.targetsByProject = data);
+          // }
 
           this.targetMatches = response;
           let completenessTargets = this.checkСompletenessTargets(response);
@@ -355,10 +357,11 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.executionUploaderService.processTargets(targetMatches, this.workPackageModalSelectorComponent?.selectedWorkPackage, this.authorId)
         .subscribe(
           (response) => {
-            if (this.projectModalSelectorComponent?.selectedProject) {
-              this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
-                .subscribe((data) => this.targetsByProject = data);
-            }
+            // if (this.projectModalSelectorComponent?.selectedProject) {
+            //   this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
+            //     .subscribe((data) => this.targetsByProject = data);
+            // }
+            response.forEach(match => {match.project = this.projectModalSelectorComponent?.selectedProject});
             this.targetMatches = response;
             // for (var row in this.targetMatchTable?.rows) {
             //   this.targetSelectComponent?.disableSelect();
