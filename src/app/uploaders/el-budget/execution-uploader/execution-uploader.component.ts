@@ -14,7 +14,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PurposeCriteria} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria.model";
 import {PurposeCriteriaViewComponent} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-view/purpose-criteria-view.component";
 import {TargetSelectComponent} from "../../../models/opsd/targets/target-select/target-select.component";
-import {TargetService} from "../../../models/opsd/targets/target.service";
+import {TargetService} from "../../../models/opsd/targets/shared/target.service";
 import {Target} from "../../../models/opsd/targets/target.model";
 import {PurposeCriteriaMonthlyExecutions} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-monthly-executions.model";
 import {PurposeCriteriaMonthlyExecution} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-monthly-execution.model";
