@@ -32,7 +32,6 @@ export class MppUploaderComponent implements AfterViewInit {
   displayedColumns: string[] = ['id', 'subject'];
   createdWorkPackages: WorkPackage[] = [];
 
-  authorId: number = 0;
   projectId: number | undefined = undefined;
 
   constructor(
@@ -47,10 +46,6 @@ export class MppUploaderComponent implements AfterViewInit {
     this.projectIsMatched = false;
     this.selectProjectVisible = true;
     this.newProjectName = "";
-
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.authorId = params['authorId'];
-    });
 
     this.activatedRoute.queryParams.subscribe(params => {
       this.projectId = params['projectId'];
@@ -122,7 +117,7 @@ export class MppUploaderComponent implements AfterViewInit {
 
       var currentFileUpload = this.selectedFiles.item(0) as File;
       this.resetResultStep();
-      this.mppUploaderService.processMppFile(currentFileUpload, this.selectedProject?.id, this.newProjectName, this.authorId).subscribe(
+      this.mppUploaderService.processMppFile(currentFileUpload, this.selectedProject?.id, this.newProjectName).subscribe(
         response => {
             this.createdWorkPackages = response;
         }

@@ -35,7 +35,7 @@ export class ExecutionUploaderService {
     return this.http.post<any>(environment.jopsd_url + '/import/execution/find_work_package', data, {headers: headers});
   }
 
-  createWorkPackage(file: File, workPackageName: string, projectId: number | undefined, projectName: string, authorId: number): Observable<any> {
+  createWorkPackage(file: File, workPackageName: string, projectId: number | undefined, projectName: string): Observable<any> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
     let data: FormData = new FormData();
@@ -43,19 +43,18 @@ export class ExecutionUploaderService {
     let params = new HttpParams()
       .set("workPackageName", workPackageName)
       .set("projectId", (projectId == undefined) ? 0 : projectId)
-      .set("projectName", projectName)
-      .set("authorId", authorId);
+      .set("projectName", projectName);
 
     return this.http.post<any>(environment.jopsd_url + '/import/execution/create_work_package', data, {headers: headers, params: params});
   }
 
-  processFinance(file: File, workPackage: WorkPackage, authorId: number): Observable<CostObject> {
+  processFinance(file: File, workPackage: WorkPackage): Observable<CostObject> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
 
     let data: FormData = new FormData();
     data.append('file', file, file.name);
-    let params = new HttpParams().set("workPackageId", workPackage.id).set("authorId", authorId);
+    let params = new HttpParams().set("workPackageId", workPackage.id);
     return this.http.post<CostObject>(environment.jopsd_url + '/import/execution/save_finance', data, {headers: headers, params: params});
   }
 
@@ -69,11 +68,10 @@ export class ExecutionUploaderService {
     return this.http.post<TargetMatch[]>(environment.jopsd_url + '/import/execution/match_purpose_criteria', data, {headers: headers});
   }
 
-  processTargets(targetMatches: TargetMatch[], workPackage: WorkPackage, authorId: number): Observable<TargetMatch[]> {
+  processTargets(targetMatches: TargetMatch[], workPackage: WorkPackage): Observable<TargetMatch[]> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
-    let params = new HttpParams().set("workPackageId", workPackage.id)
-                                 .set("authorId", (authorId) ? authorId : 1);
+    let params = new HttpParams().set("workPackageId", workPackage.id);
 
     return this.http.post<TargetMatch[]>(environment.jopsd_url + '/import/execution/process_targets', targetMatches, {headers: headers, params: params});
   }

@@ -88,7 +88,6 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   workPackageIsMatched: boolean;
   newProjectName: string;
   newWorkPackageName: string;
-  authorId: number = 0;
   selectedProject: Project | undefined;
   selectedWorkPackage: WorkPackage | undefined;
   selectedCostObject: CostObject | undefined;
@@ -157,9 +156,6 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.targetTableVisible = true;
     this.processTargetBtnVisible = false;
 
-    this.activatedRoute.queryParams.subscribe(params => {
-      this.authorId = params['authorId'];
-    });
   }
 
   ngAfterViewInit(): void {
@@ -267,7 +263,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       } else {
           var projectId = (this.selectProjectVisible) ? this.selectedProject?.id : 0;
           var projectName = (this.selectProjectVisible) ? "" : this.newProjectName;
-          this.executionUploaderService.createWorkPackage(currentFileUpload, this.newWorkPackageName, projectId, projectName, this.authorId).subscribe(
+          this.executionUploaderService.createWorkPackage(currentFileUpload, this.newWorkPackageName, projectId, projectName).subscribe(
             response => {
               if (response.id) {
                 this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response))
@@ -299,7 +295,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   processFinance(file: File, workPackage: WorkPackage) {
-    this.executionUploaderService.processFinance(file, workPackage, this.authorId)
+    this.executionUploaderService.processFinance(file, workPackage)
       .subscribe(
     response => {
           if (response.id) {
@@ -354,7 +350,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   processTarget(targetMatches: TargetMatch[]) {
     if (this.workPackageModalSelectorComponent?.selectedWorkPackage) {
-      this.executionUploaderService.processTargets(targetMatches, this.workPackageModalSelectorComponent?.selectedWorkPackage, this.authorId)
+      this.executionUploaderService.processTargets(targetMatches, this.workPackageModalSelectorComponent?.selectedWorkPackage)
         .subscribe(
           (response) => {
             // if (this.projectModalSelectorComponent?.selectedProject) {

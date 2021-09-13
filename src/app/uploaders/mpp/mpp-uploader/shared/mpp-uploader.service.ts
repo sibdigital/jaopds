@@ -12,7 +12,7 @@ export class MppUploaderService {
 
   constructor(private http: HttpClient) { }
 
-  processMppFile(file: File, projectId: number | undefined, projectName: string, authorId: number): Observable<WorkPackage[]> {
+  processMppFile(file: File, projectId: number | undefined, projectName: string): Observable<WorkPackage[]> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
 
@@ -20,8 +20,7 @@ export class MppUploaderService {
     data.append('file', file, file.name);
     let params = new HttpParams()
       .set("projectId", (projectId == undefined) ? 0 : projectId)
-      .set("projectName", projectName)
-      .set("authorId", (authorId == undefined) ? 0 : authorId);
+      .set("projectName", projectName);
 
     return this.http.post<WorkPackage[]>(environment.jopsd_url + '/import/mpp', data, {headers: headers, params: params});
   }
