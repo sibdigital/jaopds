@@ -3,15 +3,15 @@
     <form [formGroup]="zeroFormGroup">
       <ng-template matStepLabel>Выбор проекта и загружаемого файла</ng-template>
       <div style="padding-bottom: 20px">
-        <mat-radio-group class="radio-group" *ngIf="!projectIsMatched">
-          <mat-radio-button class="radio-button" value="1" (change)="projectRadioChange($event)" [checked]="selectProjectVisible">Выбрать существующий проект</mat-radio-button>
-          <mat-radio-button class="radio-button" value="2" (change)="projectRadioChange($event)">Создать новый проект</mat-radio-button>
-        </mat-radio-group>
+<!--        <mat-radio-group class="radio-group" *ngIf="!projectIsMatched">-->
+<!--          <mat-radio-button class="radio-button" value="1" (change)="projectRadioChange($event)" [checked]="selectProjectVisible">Выбрать существующий проект</mat-radio-button>-->
+<!--          <mat-radio-button class="radio-button" value="2" (change)="projectRadioChange($event)">Создать новый проект</mat-radio-button>-->
+<!--        </mat-radio-group>-->
         <app-project-modal-selector [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectModalSelectorComponent [hidden]="!selectProjectVisible"></app-project-modal-selector>
-        <mat-form-field *ngIf="!selectProjectVisible" class="project-width">
-          <mat-label>Название нового проекта</mat-label>
-          <input matInput (change)="setNewProjectName($event.target)">
-        </mat-form-field>
+<!--        <mat-form-field *ngIf="!selectProjectVisible" class="project-width">-->
+<!--          <mat-label>Название нового проекта</mat-label>-->
+<!--          <input matInput (change)="setNewProjectName($event.target)">-->
+<!--        </mat-form-field>-->
       </div>
       <div style="padding-bottom: 20px">
         <button mat-raised-button type="button" (click)="fileInput.click()">
