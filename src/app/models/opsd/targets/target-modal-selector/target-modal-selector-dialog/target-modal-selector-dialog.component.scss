@@ -4,24 +4,21 @@
   right:-24px;
 }
 
-.close-icon {
-  transition: 1s ease-in-out;
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
 }
 
-.close-icon:hover {
-  transform: rotate(180deg);
-}
-
-::ng-deep .icon-outside .close-button{
-  float: right;
-  top:-52px;
-  right:-52px;
-}
-
-::ng-deep .icon-outside .mat-dialog-container {
-  overflow: unset
+.mat-row:hover .mat-cell {
+  background-color: #3F51B5;
+  color: white;
 }
 
 mat-form-field {
   width: 100%;
+}
+
+.margin-bottom-cls {
+  margin-bottom: 15px;
 }

@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Project} from "../../projects/project.model";
 import {WorkPackage} from "../work-package.model";
 import {environment} from "../../../../../environments/environment";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {WorkPackageModalSelectorDialogComponent} from "./work-package-modal-selector-dialog/work-package-modal-selector-dialog.component";
 
 @Component({
@@ -23,14 +23,21 @@ export class WorkPackageModalSelectorComponent implements OnInit {
   }
 
   chooseWorkPackage(): void{
-    const dialogRef = this.dialog.open(WorkPackageModalSelectorDialogComponent,
-      {
-        minWidth: 0.8 * window.innerWidth,
-        maxWidth: 0.8 * window.innerWidth,
-        data: {
-          project: this.project
-        }
-      }
+    let matDialogConfig: MatDialogConfig = {
+      panelClass: "dialog-responsive",
+      data: {
+        project: this.project
+      },
+      autoFocus: false
+    }
+    const dialogRef = this.dialog.open(WorkPackageModalSelectorDialogComponent, matDialogConfig
+      // {
+      //   minWidth: 0.8 * window.innerWidth,
+      //   maxWidth: 0.8 * window.innerWidth,
+      //   data: {
+      //     project: this.project
+      //   }
+      // }
     );
 
     dialogRef.afterClosed().subscribe(result => {
@@ -44,13 +51,17 @@ export class WorkPackageModalSelectorComponent implements OnInit {
   openWorkPackage(event: any){
     event.stopPropagation();
     if (this.selectedWorkPackage) {
-      window.open(environment.url + "/projects/" + this.project?.id + "/work_packages/" + this.selectedWorkPackage?.id, "_blank");
+      window.open(environment.url + "/projects/" + this.project?.identifier + "/work_packages/" + this.selectedWorkPackage?.id, "_blank");
     }
   }
 
   setProjectAndResetWorkPackage(project: Project) {
     this.project = project;
     this.selectedWorkPackage = undefined;
+  }
+
+  setProject(project: Project) {
+    this.project = project
   }
 
   setWorkPackage(workPackage: WorkPackage) {

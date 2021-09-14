@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Project} from "../../projects/project.model";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {environment} from "../../../../../environments/environment";
 import {Target} from "../target.model";
 import {TargetModalSelectorDialogComponent} from "./target-modal-selector-dialog/target-modal-selector-dialog.component";
@@ -23,15 +23,14 @@ export class TargetModalSelectorComponent implements OnInit {
   }
 
   chooseTarget(): void{
-    const dialogRef = this.dialog.open(TargetModalSelectorDialogComponent,
-      {
-        minWidth: 0.8 * window.innerWidth,
-        maxWidth: 0.8 * window.innerWidth,
-        data: {
-          project: this.project
-        }
-      }
-    );
+    let matDialogConfig: MatDialogConfig = {
+      panelClass: "dialog-responsive",
+      data: {
+        project: this.project
+      },
+      autoFocus: false
+    }
+    const dialogRef = this.dialog.open(TargetModalSelectorDialogComponent, matDialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result.data) {

@@ -5,7 +5,7 @@
       <div style="padding-bottom: 20px">
         <button mat-raised-button type="button" (click)="fileInput.click()">
           Выберите файл
-          <input #fileInput type="file" style="display: none" [accept]="'*.*'" [multiple]="false" (change)="filesChanged($event)"/>
+          <input #fileInput type="file" style="display: none" accept=".xml" [multiple]="false" (change)="filesChanged($event)"/>
         </button>
         <span class="file-input-text" style="padding-left: 25px">{{ selectedFileText }}</span>
       </div>
@@ -27,7 +27,7 @@
         </mat-radio-group>
 <!--        <app-project-select [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectSelectComponent [hidden]="!selectProjectVisible"></app-project-select>-->
         <app-project-modal-selector [selectedProject]="selectedProject" (outputSelectedProject)="getOutputProject($event)" #projectModalSelectorComponent [hidden]="!selectProjectVisible"></app-project-modal-selector>
-        <mat-form-field *ngIf="!selectProjectVisible" class="project-width">
+        <mat-form-field *ngIf="!selectProjectVisible" class="new-input-width">
           <mat-label>Название нового проекта</mat-label>
           <input matInput (change)="setNewProjectName($event.target)">
         </mat-form-field>
@@ -39,7 +39,7 @@
         </mat-radio-group>
 <!--        <app-work-package-select [selectedWorkPackage]="selectedWorkPackage" [hidden]="!selectWorkPackageVisible" #workPackageSelectComponent (outputSelectedWorkPackage)="getOutputWorkPackage($event)"></app-work-package-select>-->
         <app-work-package-modal-selector [selectedWorkPackage]="selectedWorkPackage" [hidden]="!selectWorkPackageVisible" #workPackageModalSelectorComponent (outputSelectedWorkPackage)="getOutputWorkPackage($event)"></app-work-package-modal-selector>
-        <mat-form-field *ngIf="!selectWorkPackageVisible" class="project-width">
+        <mat-form-field *ngIf="!selectWorkPackageVisible" class="new-input-width">
           <mat-label>Название результата</mat-label>
           <input matInput (change)="setNewWorkPackageName($event.target)">
         </mat-form-field>

@@ -8,6 +8,7 @@ import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatIconModule} from "@angular/material/icon";
 import {TargetModalSelectorDialogComponent} from "./target-modal-selector-dialog.component";
+import {MatButtonModule} from "@angular/material/button";
 
 
 
@@ -26,7 +27,8 @@ import {TargetModalSelectorDialogComponent} from "./target-modal-selector-dialog
     MatPaginatorModule,
     MatTableModule,
     MatSortModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonModule
   ]
 })
 export class TargetModalSelectorDialogModule { }

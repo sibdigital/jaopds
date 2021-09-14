@@ -34,6 +34,7 @@ export class TargetModalSelectorDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.dialogRef.updateSize('80%');
   }
 
   ngAfterViewInit() {

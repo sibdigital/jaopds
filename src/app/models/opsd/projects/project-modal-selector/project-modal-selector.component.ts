@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {environment} from "../../../../../environments/environment";
 import {Project} from "../project.model";
 import {ProjectModalSelectorDialogComponent} from "./project-modal-selector-dialog/project-modal-selector-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {BehaviorSubject} from "rxjs";
 import {scan} from "rxjs/operators";
 
@@ -17,19 +17,20 @@ export class ProjectModalSelectorComponent implements OnInit {
   @Output() outputSelectedProject = new EventEmitter<any>();
   disabled: boolean = false;
 
+
   constructor(public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
   }
 
+
   chooseProject(): void{
-    const dialogRef = this.dialog.open(ProjectModalSelectorDialogComponent,
-    {
-      minWidth: 0.8 * window.innerWidth,
-      maxWidth: 0.8 * window.innerWidth
+    let matDialogConfig: MatDialogConfig = {
+      panelClass: "dialog-responsive",
+      autoFocus: false
     }
-    );
+    const dialogRef = this.dialog.open(ProjectModalSelectorDialogComponent, matDialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       if (result.data) {

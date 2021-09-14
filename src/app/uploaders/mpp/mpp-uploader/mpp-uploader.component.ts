@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MatRadioChange} from "@angular/material/radio";
 import {Project} from "../../../models/opsd/projects/project.model";
@@ -8,6 +8,7 @@ import {MatStepper} from "@angular/material/stepper";
 import {ProjectService} from "../../../models/opsd/projects/shared/project.service";
 import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
 import {environment} from "../../../../environments/environment";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-mpp-uploader',
@@ -17,6 +18,7 @@ import {environment} from "../../../../environments/environment";
 export class MppUploaderComponent implements AfterViewInit {
 
   @ViewChild('stepper') stepper: MatStepper | undefined;
+  @Input() resultText = '';
 
   isLinear: boolean;
 
@@ -72,7 +74,7 @@ export class MppUploaderComponent implements AfterViewInit {
 
   ngOnInit(): void {
     this.isLinear = true;
-    this.isLinear = false;
+    // this.isLinear = false;
     this.projectIsMatched = false;
     this.selectProjectVisible = true;
     this.newProjectName = "";
@@ -109,6 +111,8 @@ export class MppUploaderComponent implements AfterViewInit {
   }
 
   resetResultStep():void {
+    this.resultText = '';
+    this.createdWorkPackages = [];
   }
 
   startProcessFile(): void {
@@ -119,7 +123,15 @@ export class MppUploaderComponent implements AfterViewInit {
       this.resetResultStep();
       this.mppUploaderService.processMppFile(currentFileUpload, this.selectedProject?.id, this.newProjectName).subscribe(
         response => {
-            this.createdWorkPackages = response;
+          this.createdWorkPackages = response;
+          this.stepper?.next();
+        },
+        error => {
+          this.resultText = "Не удалось создать контрольные точки.";
+          if (error instanceof HttpErrorResponse) {
+            this.resultText = this.resultText + " Ошибка: " + error.status;
+          }
+          this.stepper?.next();
         }
       )
     }

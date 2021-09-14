@@ -67,8 +67,9 @@ mat-table__wrapper .mat-table {
   margin: 5px;
 }
 
-.project-width {
-  width: 50%;
+.new-input-width {
+  width: 100%;
+  max-width: 500px;
 }
 
 ::ng-deep .budget-class input.mat-input-element  {

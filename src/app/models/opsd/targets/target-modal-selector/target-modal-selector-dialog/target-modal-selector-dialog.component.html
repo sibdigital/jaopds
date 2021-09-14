@@ -8,7 +8,7 @@
     <input matInput type="text" placeholder="После ввода нажмите Enter" #input (keyup.enter)="keyWordChange($event)">
   </mat-form-field>
 
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z0 margin-bottom-cls">
     <table mat-table [dataSource]="targets" width="100%"
            matSort matSortActive="name" matSortDirection="asc">
 
