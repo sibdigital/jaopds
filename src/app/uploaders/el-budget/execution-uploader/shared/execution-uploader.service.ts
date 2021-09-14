@@ -35,6 +35,17 @@ export class ExecutionUploaderService {
     return this.http.post<any>(environment.jopsd_url + '/import/execution/find_work_package', data, {headers: headers});
   }
 
+  putMetaIdToWorkPackage(file: File, workPackageId: number): Observable<any> {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    let data: FormData = new FormData();
+    data.append('file', file, file.name);
+    let params = new HttpParams()
+      .set("workPackageId", workPackageId);
+
+    return this.http.post<any>(environment.jopsd_url + '/import/execution/put_metaid_to_work_package', data, {headers: headers, params: params});
+  }
+
   createWorkPackage(file: File, workPackageName: string, projectId: number | undefined, projectName: string): Observable<any> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');

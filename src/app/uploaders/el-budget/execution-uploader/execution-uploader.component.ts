@@ -31,6 +31,7 @@ import {CostObject} from "../../../models/opsd/cost-objects/cost-object.model";
 import {ProjectModalSelectorComponent} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.component";
 import {WorkPackageModalSelectorComponent} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.component";
 import {TargetModalSelectorComponent} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.component";
+import {ProjectService} from "../../../models/opsd/projects/shared/project.service";
 
 // interface TargetMatch {
 //   purposeCriteria: PurposeCriteria;
@@ -70,6 +71,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @ViewChild('stepper') stepper: MatStepper | undefined;
 
   isLinear: boolean;
+  projectIdFromUrl: number | undefined = undefined;
+
 
   selectProjectVisible: boolean;
   selectWorkPackageVisible: boolean;
@@ -106,6 +109,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
               private activatedRoute: ActivatedRoute,
               public _formBuilder: FormBuilder,
               private _snackBar: MatSnackBar,
+              private projectService: ProjectService,
               private targetService: TargetService) {
     this.isLinear = true;
     this.isLinear = false;
@@ -141,7 +145,11 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   ngOnInit(): void {
     this.isLinear = true;
-    this.isLinear = false;
+    // this.isLinear = false;
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.projectIdFromUrl = params['projectId'];
+    });
 
     this.newProjectName = "";
     this.newWorkPackageName = "";
@@ -159,6 +167,14 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   ngAfterViewInit(): void {
+    if (this.projectIdFromUrl) {
+      this.projectService.getProjectById(this.projectIdFromUrl).subscribe(
+        (data) => {
+          this.getOutputProject(data);
+        }
+      )
+    }
+
   }
 
   getOutputProject(outputProject: Project) {
@@ -197,9 +213,11 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.executionUploaderService.findWorkPackage(currentFileUpload).subscribe(
          response => {
           if (response.cause && response.sname == 'null') {
+            this.stepper?.next();
           } else if (response.id) {
               this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response));
-              this.stepper?.next();
+              this.stepper?.next(); // на шаг 2
+              this.stepper?.next()  // на шаг 3
               this.processFinance(currentFileUpload, WorkPackage.fromJSON(response));
           }
         }
@@ -217,6 +235,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
       if (response.project) {
         this.projectModalSelectorComponent?.setProject(response.project);
+        this.workPackageModalSelectorComponent?.setProject(response.project);
         this.workPackageModalSelectorComponent?.setWorkPackage(response);
       }
     } catch (error) {
@@ -257,8 +276,20 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
       if (this.selectWorkPackageVisible) {
         if (this.selectedWorkPackage) {
-          this.processFinance(currentFileUpload, this.selectedWorkPackage);
-          this.stepper?.next();
+          this.executionUploaderService.putMetaIdToWorkPackage(currentFileUpload, this.selectedWorkPackage.id).subscribe(
+            response => {
+              if (response.id && this.selectedWorkPackage) {
+                this.processFinance(currentFileUpload, this.selectedWorkPackage);
+                this.stepper?.next();
+              }
+            },
+            error => {
+              this.workPackageResultText = "Не удалось загрузить в данное мероприятие";
+              if (error instanceof HttpErrorResponse) {
+                this.workPackageResultText = this.workPackageResultText + " Ошибка: " + error.status;
+              }
+            }
+          )
         }
       } else {
           var projectId = (this.selectProjectVisible) ? this.selectedProject?.id : 0;
@@ -383,7 +414,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       // this.targetTableVisible = false;
       this.processTarget(this.targetMatches);
     } else {
-      this._snackBar.open("Не везде установлено сопоставление целевых показателей!");
+      this._snackBar.open("Не везде установлено сопоставление целевых показателей!", 'Ok', {
+        duration: 3000
+      });
     }
   }
 
