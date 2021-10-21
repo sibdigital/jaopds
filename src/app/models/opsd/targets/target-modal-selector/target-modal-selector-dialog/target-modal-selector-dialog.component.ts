@@ -19,6 +19,7 @@ export class TargetModalSelectorDialogComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name'];
   targets : Target[] = [];
   project: Project | undefined;
+  excludedTargets: Target[];
   keyWord : string = '';
   isLoadingResults = true;
   isRateLimitReached = false;
@@ -31,6 +32,7 @@ export class TargetModalSelectorDialogComponent implements OnInit {
     private targetService: TargetService
   ) {
     this.project = this.data.project;
+    this.excludedTargets = this.data.excludedTargets;
   }
 
   ngOnInit(): void {
@@ -68,6 +70,8 @@ export class TargetModalSelectorDialogComponent implements OnInit {
         })
       ).subscribe(data => {
       this.targets = data;
+      var excludedTargetsIds = this.excludedTargets.map(ctr => ctr.id);
+      this.targets = this.targets.filter(target => !excludedTargetsIds.includes(target.id));
     });
 
   }

@@ -1,29 +1,19 @@
 import {
-  AfterContentInit, AfterViewInit,
-  ChangeDetectorRef,
-  Component, ElementRef, EventEmitter,
-  Input, OnInit, Output, ViewChild
+  AfterViewInit,
+  Component, ElementRef,
+  Input, ViewChild
 } from '@angular/core';
 import {ExecutionUploaderService} from "./shared/execution-uploader.service";
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Event, Router} from '@angular/router';
 import {Project} from "../../../models/opsd/projects/project.model";
-import {WorkPackageSelectComponent} from "../../../models/opsd/work-packages/work-package-select/work-package-select.component";
-// import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
-import {JavaResponseBody} from "../../../models/java-response-body.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PurposeCriteria} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria.model";
-import {PurposeCriteriaViewComponent} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-view/purpose-criteria-view.component";
-import {TargetSelectComponent} from "../../../models/opsd/targets/target-select/target-select.component";
 import {TargetService} from "../../../models/opsd/targets/shared/target.service";
 import {Target} from "../../../models/opsd/targets/target.model";
-import {PurposeCriteriaMonthlyExecutions} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-monthly-executions.model";
-import {PurposeCriteriaMonthlyExecution} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria-monthly-execution.model";
 import {MatStepper} from "@angular/material/stepper";
 import {HttpErrorResponse} from "@angular/common/http";
-import {ProjectSelectComponent} from "../../../models/opsd/projects/project-select/project-select.component";
 import {MatRadioChange} from "@angular/material/radio";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
-import {MatInput} from "@angular/material/input";
 import {WorkPackage} from "../../../models/opsd/work-packages/work-package.model";
 import {TargetMatch} from "../../../models/target-match.model";
 import {environment} from "../../../../environments/environment";
@@ -32,17 +22,8 @@ import {ProjectModalSelectorComponent} from "../../../models/opsd/projects/proje
 import {WorkPackageModalSelectorComponent} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.component";
 import {TargetModalSelectorComponent} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.component";
 import {ProjectService} from "../../../models/opsd/projects/shared/project.service";
+import {MatSlideToggleChange} from "@angular/material/slide-toggle";
 
-// interface TargetMatch {
-//   purposeCriteria: PurposeCriteria;
-//   target: Target | undefined;
-//   createNewTarget: boolean;
-//
-//   // constructor(purposeCriteria: PurposeCriteria, target: Target | undefined) {
-//   //   this.purposeCriteria  = purposeCriteria,
-//   //   this.target = target;
-//   // }
-// }
 
 
 @Component({
@@ -59,14 +40,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @Input() outputTarget: Target | undefined;
 
   @ViewChild('fileInput') fileInputRef: ElementRef | undefined;
-  // @ViewChild('projectSelectComponent') projectSelectComponent: ProjectSelectComponent | undefined;
   @ViewChild('projectModalSelectorComponent') projectModalSelectorComponent: ProjectModalSelectorComponent | undefined;
-  // @ViewChild('projectName') projectName: MatInput | undefined;
-  // @ViewChild('workPackageSelectComponent') workPackageSelectComponent: WorkPackageSelectComponent | undefined;
   @ViewChild('workPackageModalSelectorComponent') workPackageModalSelectorComponent: WorkPackageModalSelectorComponent | undefined;
-  // @ViewChild('targetSelectComponent') targetSelectComponent: TargetSelectComponent | undefined;
   @ViewChild('targetModalSelectorComponent') targetModalSelectorComponent: TargetModalSelectorComponent | undefined;
-  // @ViewChild('workPackageName') workPackageName: MatInput | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
   @ViewChild('stepper') stepper: MatStepper | undefined;
 
@@ -98,8 +74,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   selectedFileText = '';
 
   targetMatches: TargetMatch[];
-  targetsByProject: Target[] | undefined;
   purposeCriteriaList: PurposeCriteria[];
+  chosenTargets: Target[];
 
   displayedColumns: string[] = ['el-budget', 'opsd', 'slider'];
 
@@ -118,6 +94,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.newWorkPackageName = "";
     this.purposeCriteriaList = [];
     this.targetMatches = [];
+    this.chosenTargets = [];
 
     this.workPackageIsMatched = false;
     this.selectProjectVisible = true;
@@ -188,6 +165,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   getOutputTarget(outputSelectedTarget: Target, targetMatch: TargetMatch) {
     targetMatch.target = outputSelectedTarget;
+    this.fillChosenTargets(this.targetMatches);
   }
 
   filesChanged(event: any): void {
@@ -367,6 +345,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
             this.thirdSpinnerVisible = false;
             this.targetTableVisible = true;
             this.processTargetBtnVisible = true;
+            this.fillChosenTargets(response);
           }
         },
         error => {
@@ -408,16 +387,25 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   continueProcessTarget() {
-    if (this.checkСompletenessTargets(this.targetMatches)) {
+    // if (this.checkСompletenessTargets(this.targetMatches)) {
       this.thirdSpinnerVisible = true;
       this.processTargetBtnVisible = false;
       // this.targetTableVisible = false;
       this.processTarget(this.targetMatches);
-    } else {
-      this._snackBar.open("Не везде установлено сопоставление целевых показателей!", 'Ok', {
-        duration: 3000
-      });
-    }
+    // } else {
+    //   this._snackBar.open("Не везде установлено сопоставление целевых показателей!", 'Ok', {
+    //     duration: 3000
+    //   });
+    // }
+  }
+
+  fillChosenTargets(targetMatches: TargetMatch[]) {
+    this.chosenTargets = [];
+    targetMatches.forEach(targetMatch => {
+      if ((targetMatch.createNewTarget == false) && (targetMatch.target !== null)) {
+        this.chosenTargets.push(targetMatch.target);
+      }
+    });
   }
 
   checkСompletenessTargets(targetMatches: TargetMatch[]) {
@@ -463,8 +451,16 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this._snackBar.open(message, 'x', config);
   }
 
-  changeToggle(targetMatch: TargetMatch) {
-    targetMatch.createNewTarget = !targetMatch.createNewTarget;
+  changeToggle(targetMatch: TargetMatch, event: MatSlideToggleChange) {
+    if (targetMatch.target) {
+      event.source.checked = false;
+      this._snackBar.open("Уберите выбранный показатель из поля (нажмите Х)", 'Ok', {
+        duration: 3000
+      });
+    } else {
+      targetMatch.createNewTarget = !targetMatch.createNewTarget;
+      event.source.checked = targetMatch.createNewTarget;
+    }
   }
 
   changeTargetName(targetMatch: TargetMatch, name: String) {
