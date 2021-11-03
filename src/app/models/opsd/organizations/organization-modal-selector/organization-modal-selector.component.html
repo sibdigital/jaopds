@@ -1,0 +1,13 @@
+<mat-form-field class="readonly-wrapper" appearance="fill" style="width: 500px">
+  <mat-label>Выберите организацию</mat-label>
+  <input matInput readonly [(ngModel)]="selectedOrganization?.name!">
+  <button mat-icon-button matSuffix (click)="chooseOrganization()" [disabled]="disabled">
+    <mat-icon>more_horiz</mat-icon>
+  </button>
+  <button mat-icon-button matSuffix (click)="openOrganization($event)">
+    <mat-icon>open_in_new</mat-icon>
+  </button>
+  <button mat-icon-button matSuffix (click)="removeOrganization($event)" [disabled]="disabled">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>

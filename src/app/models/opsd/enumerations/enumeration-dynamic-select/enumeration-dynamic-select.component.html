@@ -1,0 +1,7 @@
+<mat-form-field class="readonly-wrapper" appearance="fill" style="width: 500px">
+  <mat-label>{{enumerationLabel}}</mat-label>
+  <mat-select (infiniteScroll)="getNextBatch()" [complete]="totalPage === page" msInfiniteScroll
+              [(ngModel)]="selectedEnumeration" (ngModelChange) = "onChange($event)" [disabled]="disabled">
+    <mat-option *ngFor="let option of options$ | async" [value]="option">{{option.name}}</mat-option>
+  </mat-select>
+</mat-form-field>

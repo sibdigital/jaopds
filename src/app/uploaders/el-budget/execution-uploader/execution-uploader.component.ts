@@ -23,7 +23,11 @@ import {WorkPackageModalSelectorComponent} from "../../../models/opsd/work-packa
 import {TargetModalSelectorComponent} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.component";
 import {ProjectService} from "../../../models/opsd/projects/shared/project.service";
 import {MatSlideToggleChange} from "@angular/material/slide-toggle";
-
+import {Organization} from "../../../models/opsd/organizations/organization.model";
+import {OrganizationModalSelectorComponent} from "../../../models/opsd/organizations/organization-modal-selector/organization-modal-selector.component";
+import {Enumeration} from "../../../models/opsd/enumerations/enumeration.model";
+import {EnumerationSelectComponent} from "../../../models/opsd/enumerations/enumeration-select/enumeration-select.component";
+import {EnumerationService} from "../../../models/opsd/enumerations/shared/enumeration.service";
 
 
 @Component({
@@ -42,7 +46,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @ViewChild('fileInput') fileInputRef: ElementRef | undefined;
   @ViewChild('projectModalSelectorComponent') projectModalSelectorComponent: ProjectModalSelectorComponent | undefined;
   @ViewChild('workPackageModalSelectorComponent') workPackageModalSelectorComponent: WorkPackageModalSelectorComponent | undefined;
+  @ViewChild('organizationModalSelectorComponent') organizationModalSelectorComponent: OrganizationModalSelectorComponent | undefined;
   @ViewChild('targetModalSelectorComponent') targetModalSelectorComponent: TargetModalSelectorComponent | undefined;
+  @ViewChild('enumerationSelectComponent') enumerationSelectComponent: EnumerationSelectComponent | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
   @ViewChild('stepper') stepper: MatStepper | undefined;
 
@@ -69,6 +75,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   newWorkPackageName: string;
   selectedProject: Project | undefined;
   selectedWorkPackage: WorkPackage | undefined;
+  selectedOrganization: Organization | undefined;
   selectedCostObject: CostObject | undefined;
   selectedFiles: FileList | undefined;
   selectedFileText = '';
@@ -77,7 +84,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   purposeCriteriaList: PurposeCriteria[];
   chosenTargets: Target[];
 
-  displayedColumns: string[] = ['el-budget', 'opsd', 'slider'];
+  displayedColumns: string[] = ['el-budget', 'opsd', 'targetType', 'slider'];
+  enumerationLabel: string = 'Выберите тип показателя';
+  targetTypeList: Enumeration[] = [];
 
 
   constructor(private executionUploaderService: ExecutionUploaderService,
@@ -86,7 +95,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
               public _formBuilder: FormBuilder,
               private _snackBar: MatSnackBar,
               private projectService: ProjectService,
-              private targetService: TargetService) {
+              private targetService: TargetService,
+              private enumerationService: EnumerationService) {
     this.isLinear = true;
     this.isLinear = false;
 
@@ -122,7 +132,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   ngOnInit(): void {
     this.isLinear = true;
-    // this.isLinear = false;
+    this.isLinear = false;
 
     this.activatedRoute.queryParams.subscribe(params => {
       this.projectIdFromUrl = params['projectId'];
@@ -152,6 +162,11 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       )
     }
 
+    this.enumerationService.getAllByActiveAndTypeAndNameIn(true, 'TargetType', ['Цель','Показатель','Результат']).subscribe(
+      (data) => {
+        this.targetTypeList = data._embedded.enumerations;
+      }
+    );
   }
 
   getOutputProject(outputProject: Project) {
@@ -163,9 +178,20 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.selectedWorkPackage = outputWorkPackage;
   }
 
+  getOutputOrganization(outputOrganization: Organization) {
+    this.selectedOrganization = outputOrganization;
+    this.organizationModalSelectorComponent?.setOrganization(outputOrganization);
+  }
+
   getOutputTarget(outputSelectedTarget: Target, targetMatch: TargetMatch) {
     targetMatch.target = outputSelectedTarget;
     this.fillChosenTargets(this.targetMatches);
+  }
+
+  getOutputTargetType(outputSelectedTargetType: Enumeration, targetMatch: TargetMatch) {
+    if (targetMatch.target) {
+      targetMatch.target.targetType = outputSelectedTargetType;
+    }
   }
 
   filesChanged(event: any): void {
@@ -208,6 +234,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.workPackageIsMatched = true;
       this.projectModalSelectorComponent?.disableChoice();
       this.workPackageModalSelectorComponent?.disableChoice();
+      this.organizationModalSelectorComponent?.disableChoice();
       this.selectProjectVisible = true;
       this.selectWorkPackageVisible = true;
 
@@ -215,6 +242,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
         this.projectModalSelectorComponent?.setProject(response.project);
         this.workPackageModalSelectorComponent?.setProject(response.project);
         this.workPackageModalSelectorComponent?.setWorkPackage(response);
+        this.organizationModalSelectorComponent?.setOrganization(response.organization);
       }
     } catch (error) {
       this._snackBar.open(error);
@@ -254,7 +282,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
       if (this.selectWorkPackageVisible) {
         if (this.selectedWorkPackage) {
-          this.executionUploaderService.putMetaIdToWorkPackage(currentFileUpload, this.selectedWorkPackage.id).subscribe(
+          this.executionUploaderService.putMetaIdAndOrganizationToWorkPackage(currentFileUpload, this.selectedWorkPackage.id, this.selectedOrganization).subscribe(
             response => {
               if (response.id && this.selectedWorkPackage) {
                 this.processFinance(currentFileUpload, this.selectedWorkPackage);
@@ -295,6 +323,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     // this.projectSelectComponent?.enableSelect();
     this.projectModalSelectorComponent?.enableChoice();
     this.workPackageModalSelectorComponent?.enableChoice();
+    this.organizationModalSelectorComponent?.enableChoice();
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.workPackageResultText = '';

@@ -1,4 +1,5 @@
 import {jsonProperty, Serializable} from "ts-serializable";
+import {Enumeration} from "../enumerations/enumeration.model";
 
 export class Target extends Serializable{
   @jsonProperty(Number)
@@ -10,8 +11,8 @@ export class Target extends Serializable{
   @jsonProperty(String, null)
   name: string | null = null;
 
-  @jsonProperty(Object)
-  typeModel: any = null;
+  @jsonProperty(Target)
+  targetType: any = null;
 
   @jsonProperty(String, null)
   unit: string | null = null;
@@ -47,7 +48,7 @@ export class Target extends Serializable{
   isAdditional: boolean | null = null;
 
   @jsonProperty(String, null)
-  type: string | null = null;
+  type: String | null = null;
 
   @jsonProperty(String, null)
   basicDate: string | null = null;

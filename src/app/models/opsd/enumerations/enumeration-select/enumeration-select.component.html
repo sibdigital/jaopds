@@ -1,0 +1,9 @@
+<mat-form-field>
+  <mat-label>{{enumerationLabel}}</mat-label>
+  <mat-select [(ngModel)]="selectedEnumeration" (ngModelChange) = "onChange($event)"
+              [disabled]="disabled">
+    <mat-option *ngFor="let enumeration of enumerations" [value] = "enumeration">
+      {{enumeration.name}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

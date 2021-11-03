@@ -1,0 +1,11 @@
+.mat-icon {
+  color: rgba(0,0,0,.54);
+}
+
+.mat-icon-button:hover .mat-icon {
+  color: black;
+}
+
+::ng-deep .mat-select-value-text {
+  color: black;
+}

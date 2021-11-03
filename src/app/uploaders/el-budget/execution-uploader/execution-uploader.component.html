@@ -44,6 +44,9 @@
           <input matInput (change)="setNewWorkPackageName($event.target)">
         </mat-form-field>
       </div>
+      <div>
+        <app-organization-modal-selector [selectedOrganization]="selectedOrganization" #organizationModalSelectorComponent (outputselectedOrganization)="getOutputOrganization($event)"></app-organization-modal-selector>
+      </div>
       <div style="padding-top: 20px">
         <button *ngIf="!workPackageIsMatched"
           mat-raised-button type="button" color = "primary" (click) = "selectOrCreateWorkPackage()">
@@ -94,6 +97,16 @@
               <mat-label>Название нового показателя</mat-label>
               <input #targetNameInput matInput (change)="changeTargetName(targetMatch, targetNameInput.value)">
             </mat-form-field>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="targetType">
+          <th mat-header-cell *matHeaderCellDef>Тип показателя</th>
+          <td mat-cell *matCellDef="let targetMatch">
+            <app-enumeration-select
+              [enumerationLabel]="enumerationLabel"
+              [enumerations] = targetTypeList
+              [selectedEnumeration]="targetMatch.target?.targetType"
+              #enumerationSelectComponent></app-enumeration-select>
           </td>
         </ng-container>
 

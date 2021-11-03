@@ -26,6 +26,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {ProjectModalSelectorModule} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.module";
 import {WorkPackageModalSelectorModule} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.module";
 import {TargetModalSelectorModule} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.module";
+import {OrganizationModalSelectorModule} from "../../../models/opsd/organizations/organization-modal-selector/organization-modal-selector.module";
+import {EnumerationSelectModule} from "../../../models/opsd/enumerations/enumeration-select/enumeration-select.module";
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import {TargetModalSelectorModule} from "../../../models/opsd/targets/target-mod
         TargetSelectModule,
         ProjectModalSelectorModule,
         WorkPackageModalSelectorModule,
-        TargetModalSelectorModule
+        TargetModalSelectorModule,
+        OrganizationModalSelectorModule,
+        EnumerationSelectModule
     ]
 })
 export class ExecutionUploaderModule { }
