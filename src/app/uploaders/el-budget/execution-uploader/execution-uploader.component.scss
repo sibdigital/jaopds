@@ -13,7 +13,7 @@ mat-cell{
 
 mat-header-cell {
   display:flex;
-  justify-content:center;
+  justify-content: left;
 }
 
 th.mat-header-cell {
@@ -22,6 +22,7 @@ th.mat-header-cell {
 
 td.mat-cell {
   border: none;
+  padding: 0 8px 0 8px ;
 }
 
 mat-table__wrapper .mat-table {
@@ -32,13 +33,19 @@ mat-table__wrapper .mat-table {
 .mat-column-el-budget {
   //white-space: unset !important;
   //flex: 0 0 50% !important;
-  width: 50%;
+  width: 30%;
 }
 
 .mat-column-opsd {
   //white-space: unset !important;
   //flex: 0 0 50% !important;
-  width: 45%;
+  width: 50%;
+}
+
+.mat-column-targetType {
+  //white-space: unset !important;
+  //flex: 0 0 50% !important;
+  width: 10%;
 }
 
 .new-target-name {
@@ -54,6 +61,18 @@ mat-table__wrapper .mat-table {
 }
 
 .mat-cell .mat-column-slider {
+  justify-content: center !important;
+}
+
+.mat-column-attached {
+  //white-space: unset !important;
+  //flex: 0 0 50% !important;
+  width: 5%;
+  align-self: center;
+  text-align: center;
+}
+
+.mat-cell .mat-column-attached {
   justify-content: center !important;
 }
 

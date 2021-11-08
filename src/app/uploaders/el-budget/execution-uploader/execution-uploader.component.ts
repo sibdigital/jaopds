@@ -84,8 +84,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   purposeCriteriaList: PurposeCriteria[];
   chosenTargets: Target[];
 
-  displayedColumns: string[] = ['el-budget', 'opsd', 'targetType', 'slider'];
-  enumerationLabel: string = 'Выберите тип показателя';
+  displayedColumns: string[] = ['el-budget', 'opsd', 'targetType', 'slider', 'attached'];
+  enumerationLabel: string = '';
   targetTypeList: Enumeration[] = [];
 
 
@@ -164,6 +164,11 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
     this.enumerationService.getAllByActiveAndTypeAndNameIn(true, 'TargetType', ['Цель','Показатель','Результат']).subscribe(
       (data) => {
+        // let enumerationList: Enumeration[] = [];
+        // data._embedded.enumerations.forEach((item:any) => {
+        //   enumerationList.push(Enumeration.fromJSON(item));
+        // });
+        // this.targetTypeList = enumerationList;
         this.targetTypeList = data._embedded.enumerations;
       }
     );
@@ -359,7 +364,17 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.executionUploaderService.processPurposeCriteria(file, workPackage)
       .subscribe(
         (response:TargetMatch[]) => {
-          response.forEach(match => {match.createNewTarget = false; match.project = this.projectModalSelectorComponent?.selectedProject});
+          response.forEach(match => {
+            match.createNewTarget = false;
+            if (match.target) {
+              match.disableTargetChoice = true;
+              match.attachedTarget = true;
+            } else {
+              match.disableTargetChoice = false;
+              match.attachedTarget = false;
+            }
+            match.project = this.projectModalSelectorComponent?.selectedProject;
+          });
 
           // if (this.projectModalSelectorComponent?.selectedProject) {
           //   this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
@@ -395,7 +410,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
             // if (this.projectModalSelectorComponent?.selectedProject) {
             //   this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
             //     .subscribe((data) => this.targetsByProject = data);
-            // }
+            // }disableTargetToggle
             response.forEach(match => {match.project = this.projectModalSelectorComponent?.selectedProject});
             this.targetMatches = response;
             // for (var row in this.targetMatchTable?.rows) {
@@ -448,6 +463,13 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     });
 
     return isComplete;
+  }
+
+  breakBinding(targetMatch: any) {
+    if (targetMatch.attachedTarget) {
+      targetMatch.disableTargetChoice = false;
+      targetMatch.attachedTarget = false;
+    }
   }
 
   checkСompletenessWorkPackages():boolean {

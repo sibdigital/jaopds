@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Enumeration} from "../enumeration.model";
+import {Target} from "../../targets/target.model";
 
 
 @Component({
@@ -12,14 +13,12 @@ export class EnumerationSelectComponent implements OnInit {
   @Input() enumerationLabel: string = 'Выберите тип';
   @Input() selectedEnumeration: Enumeration | undefined;
   @Output() outputSelectedEnumeration = new EventEmitter<any>();
-  disabled: boolean = false;
+  @Input() disabled: boolean = false;
 
   constructor() {
   }
 
   ngOnInit(): void {
-    console.log(this.selectedEnumeration);
-    console.log(this.enumerations);
   }
 
   onChange(newValue: any) {
@@ -27,6 +26,9 @@ export class EnumerationSelectComponent implements OnInit {
     this.outputSelectedEnumeration.emit(newValue);
   }
 
+  compareFn(c1: Enumeration, c2: Enumeration): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
 
   disableSelect() {
     this.disabled = true;

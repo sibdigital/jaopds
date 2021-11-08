@@ -21,7 +21,7 @@ export class Enumeration extends Serializable{
   active: boolean | null = null;
 
   @jsonProperty(Project)
-  project: Project | undefined = undefined;
+  project: Project | null = null;
 
   @jsonProperty(Object)
   parent: any = null;
@@ -31,5 +31,8 @@ export class Enumeration extends Serializable{
 
   @jsonProperty(String, null)
   updatedAt: string | null = null;
+
+  @jsonProperty(Object, null)
+  color: any = null;
 
 }

@@ -20,4 +20,10 @@ export class TargetMatch extends Serializable{
   @jsonProperty(Project, undefined)
   project: Project | undefined = undefined;
 
+  @jsonProperty(Boolean)
+  disableTargetChoice: boolean = false;
+
+  @jsonProperty(Boolean)
+  attachedTarget: boolean = false;
+
 }
