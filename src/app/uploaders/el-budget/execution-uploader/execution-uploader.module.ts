@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
-import {ExecutionUploaderComponent} from "./execution-uploader.component";
+import {
+  ConfirmationOfUnattachComponent,
+  ExecutionUploaderComponent
+} from "./execution-uploader.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppRoutingModule} from "../../../app-routing.module";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -26,41 +29,47 @@ import {MatIconModule} from "@angular/material/icon";
 import {ProjectModalSelectorModule} from "../../../models/opsd/projects/project-modal-selector/project-modal-selector.module";
 import {WorkPackageModalSelectorModule} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.module";
 import {TargetModalSelectorModule} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.module";
+import {OrganizationModalSelectorModule} from "../../../models/opsd/organizations/organization-modal-selector/organization-modal-selector.module";
+import {EnumerationSelectModule} from "../../../models/opsd/enumerations/enumeration-select/enumeration-select.module";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
-    ExecutionUploaderComponent
+    ExecutionUploaderComponent,
+    ConfirmationOfUnattachComponent
   ],
-    imports: [
-        // HttpClientModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        AppRoutingModule,
+  imports: [
+    // HttpClientModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
 
-        CommonModule,
-        FormsModule,
+    CommonModule,
+    FormsModule,
 
-        MatButtonModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatStepperModule,
-        MatProgressSpinnerModule,
-        MatTableModule,
-        MatRadioModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatSnackBarModule,
-        MatSlideToggleModule,
-        MatIconModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatStepperModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatRadioModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatIconModule,
+    MatDialogModule,
 
-        ProjectSelectModule,
-        WorkPackageSelectModule,
-        ReactiveFormsModule,
-        PurposeCriteriaViewModule,
-        TargetSelectModule,
-        ProjectModalSelectorModule,
-        WorkPackageModalSelectorModule,
-        TargetModalSelectorModule
+    ProjectSelectModule,
+    WorkPackageSelectModule,
+    ReactiveFormsModule,
+    PurposeCriteriaViewModule,
+    TargetSelectModule,
+    ProjectModalSelectorModule,
+    WorkPackageModalSelectorModule,
+    TargetModalSelectorModule,
+    OrganizationModalSelectorModule,
+    EnumerationSelectModule
     ]
 })
 export class ExecutionUploaderModule { }

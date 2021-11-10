@@ -8,6 +8,7 @@ import {Target} from "../../../../models/opsd/targets/target.model";
 import {environment} from "../../../../../environments/environment";
 import {TargetMatch} from "../../../../models/target-match.model";
 import {CostObject} from "../../../../models/opsd/cost-objects/cost-object.model";
+import {Organization} from "../../../../models/opsd/organizations/organization.model";
 
 // class TargetMatch {
 //   purposeCriteria: PurposeCriteria;
@@ -46,7 +47,7 @@ export class ExecutionUploaderService {
     return this.http.post<any>(environment.jopsd_url + '/import/execution/put_metaid_to_work_package', data, {headers: headers, params: params});
   }
 
-  createWorkPackage(file: File, workPackageName: string, projectId: number | undefined, projectName: string): Observable<any> {
+  createWorkPackage(file: File, workPackageName: string, projectId: number | undefined, projectName: string, organizationId: number | undefined): Observable<any> {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
     let data: FormData = new FormData();
@@ -54,7 +55,8 @@ export class ExecutionUploaderService {
     let params = new HttpParams()
       .set("workPackageName", workPackageName)
       .set("projectId", (projectId == undefined) ? 0 : projectId)
-      .set("projectName", projectName);
+      .set("projectName", projectName)
+      .set("organizationId", (organizationId == undefined) ? 0 : organizationId);
 
     return this.http.post<any>(environment.jopsd_url + '/import/execution/create_work_package', data, {headers: headers, params: params});
   }

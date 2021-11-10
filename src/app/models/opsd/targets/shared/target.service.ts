@@ -16,9 +16,18 @@ export class TargetService {
     return this.http.get<Target[]>(environment.jopsd_url + '/target_list', {params: params});
   }
 
-  getAllByProjectIdAndNameAndPageAndSizeAndSort(projectId: number, name: string, page: number, size: number, sort: string, sortDir: string) {
+  getAllByProjectIdAndNameAndIdIsNotInAndPageAndSizeAndSort(projectId: number, name: string, ids: any, page: number, size: number, sort: string, sortDir: string) {
     sortDir = (sortDir == '') ? 'asc' : sortDir;
-    let params = {projectId: projectId, name: name, page: page, size: size, sort: sort.concat(',', sortDir)};
-    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/targets/search/findByProject_IdAndNameContainingIgnoreCase', {params: params});
+    let params = {projectId, name, ids, page, size, sort: sort.concat(',', sortDir)};
+    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/targets/search/findByProject_IdAndNameContainingIgnoreCaseAndIdIsNotIn', {params: params});
+  }
+
+  changeTargetMetaId(target: Target, metaId: number | null) {
+    return this.http.post(environment.jopsd_url + '/targets/metaId',
+      {},
+      {params: new HttpParams()
+          .set("metaId", metaId ? metaId.toString() : '')
+          .set("targetId", target.id ? target.id.toString() : '')
+         });
   }
 }

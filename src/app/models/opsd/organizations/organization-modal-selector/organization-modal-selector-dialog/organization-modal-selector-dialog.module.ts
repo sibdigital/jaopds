@@ -7,21 +7,17 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatIconModule} from "@angular/material/icon";
-import {TargetModalSelectorDialogComponent} from "./target-modal-selector-dialog.component";
 import {MatButtonModule} from "@angular/material/button";
-import {EnumerationSelectModule} from "../../../enumerations/enumeration-select/enumeration-select.module";
-import {MatToolbarModule} from "@angular/material/toolbar";
-import {MatCardModule} from "@angular/material/card";
-import {TargetModalCreatorDialogModule} from "../target-modal-creator-dialog/target-modal-creator-dialog.module";
+import {OrganizationModalSelectorDialogComponent} from "./organization-modal-selector-dialog.component";
 
 
 
 @NgModule({
   declarations: [
-    TargetModalSelectorDialogComponent
+    OrganizationModalSelectorDialogComponent
   ],
   exports:[
-    TargetModalSelectorDialogComponent
+    OrganizationModalSelectorDialogComponent
   ],
   imports: [
     CommonModule,
@@ -32,11 +28,7 @@ import {TargetModalCreatorDialogModule} from "../target-modal-creator-dialog/tar
     MatTableModule,
     MatSortModule,
     MatIconModule,
-    MatButtonModule,
-    EnumerationSelectModule,
-    MatToolbarModule,
-    MatCardModule,
-    TargetModalCreatorDialogModule
+    MatButtonModule
   ]
 })
-export class TargetModalSelectorDialogModule { }
+export class OrganizationModalSelectorDialogModule { }

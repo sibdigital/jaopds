@@ -10,7 +10,7 @@ export class WorkPackage extends Serializable {
   @jsonProperty(Object)
   type: any = null;
 
-  @jsonProperty(Project)
+  @jsonProperty(Object)
   project: Project | undefined = undefined;
 
   @jsonProperty(String)

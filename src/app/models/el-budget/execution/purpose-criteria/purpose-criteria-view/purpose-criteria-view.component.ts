@@ -59,20 +59,13 @@ export class PurposeCriteriaViewComponent implements OnInit {
   ngOnInit(): void {
     this.tree_data = [];
     if (this.purposeCriteria) {
-      this.tree_data.push({
-        name: 'Показатель (metaId: ' + this.purposeCriteria.purposeCriteriaMetaId + ')',
-        children: this.getNodeByPurposeCriteria(this.purposeCriteria)
-      })
+      this.tree_data = this.getNodeByPurposeCriteria(this.purposeCriteria);
       this.dataSource.data = this.tree_data;
     }
   }
 
   parsePurposeCriteriaList(purposeCriteria: PurposeCriteria): void {
-    this.tree_data = [];
-    this.tree_data.push({
-      name: 'Показатель (metaId: ' + purposeCriteria.purposeCriteriaMetaId + ')',
-      children: this.getNodeByPurposeCriteria(purposeCriteria)
-    })
+    this.tree_data = this.getNodeByPurposeCriteria(purposeCriteria);
 
     this.dataSource.data = this.tree_data;
   }

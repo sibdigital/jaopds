@@ -11,13 +11,13 @@ export class TargetMatch extends Serializable{
   @jsonProperty(Target, null)
   target: Target | null = null;
 
-  @jsonProperty(Boolean)
-  createNewTarget: boolean = false;
-
-  @jsonProperty(String)
-  newTargetName: String = "";
-
-  @jsonProperty(Project, undefined)
+  @jsonProperty(Object, undefined)
   project: Project | undefined = undefined;
+
+  @jsonProperty(Boolean)
+  attachedTarget: boolean = false;
+
+  @jsonProperty(Boolean)
+  disableTargetChoice: boolean = false;
 
 }

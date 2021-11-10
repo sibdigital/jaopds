@@ -3,11 +3,14 @@ import {Target} from "../../target.model";
 import {Project} from "../../../projects/project.model";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
-import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
 import {merge, of as observableOf} from "rxjs";
 import {catchError, map, startWith, switchMap} from "rxjs/operators";
 import {MatRow} from "@angular/material/table";
 import {TargetService} from "../../shared/target.service";
+import {TargetModalCreatorDialogComponent} from "../target-modal-creator-dialog/target-modal-creator-dialog.component";
+import {MatIcon} from "@angular/material/icon";
+import {MatInput} from "@angular/material/input";
 
 @Component({
   selector: 'app-target-modal-selector-dialog',
@@ -28,6 +31,7 @@ export class TargetModalSelectorDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<TargetModalSelectorDialogComponent>,
+    public dialogAddForm: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private targetService: TargetService
   ) {
@@ -48,8 +52,9 @@ export class TargetModalSelectorDialogComponent implements OnInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.targetService.getAllByProjectIdAndNameAndPageAndSizeAndSort(
-            this.project?.id!, this.keyWord, this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.direction)
+          let excludedIds = this.excludedTargets.map(ctr => ctr.id).toString();
+          return this.targetService.getAllByProjectIdAndNameAndIdIsNotInAndPageAndSizeAndSort(
+            this.project?.id!, this.keyWord, excludedIds, this.paginator.pageIndex, this.paginator.pageSize, this.sort.active, this.sort.direction)
             .pipe(catchError(() => observableOf(null)));
         }),
         map(data => {
@@ -70,8 +75,8 @@ export class TargetModalSelectorDialogComponent implements OnInit {
         })
       ).subscribe(data => {
       this.targets = data;
-      var excludedTargetsIds = this.excludedTargets.map(ctr => ctr.id);
-      this.targets = this.targets.filter(target => !excludedTargetsIds.includes(target.id));
+      // var excludedTargetsIds = this.excludedTargets.map(ctr => ctr.id);
+      // this.targets = this.targets.filter(target => !excludedTargetsIds.includes(target.id));
     });
 
   }
@@ -86,4 +91,19 @@ export class TargetModalSelectorDialogComponent implements OnInit {
     this.dialogRef.close({data: row});
   }
 
+  openAddForm() {
+    let matDialogConfig: MatDialogConfig = {
+      panelClass: "dialog-responsive",
+      data: {
+        project: this.project,
+      },
+      autoFocus: false
+    }
+    const dialogRef = this.dialogAddForm.open(TargetModalCreatorDialogComponent, matDialogConfig);
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.paginator.pageIndex = 0;
+      this.ngAfterViewInit();
+    });
+  }
 }

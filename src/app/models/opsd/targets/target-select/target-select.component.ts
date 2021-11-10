@@ -56,7 +56,7 @@ export class TargetSelectComponent implements OnInit {
   openTarget(event: any){
     event.stopPropagation();
     if (this.selectedTarget) {
-      window.open(environment.url + "/projects/" + this.selectedTarget?.project.id+ "/targets/" + this.selectedTarget.id + "/edit", "_blank");    }
+      window.open(environment.url + "/projects/" + this.selectedTarget?.project?.id+ "/targets/" + this.selectedTarget.id + "/edit", "_blank");    }
   }
 
 }

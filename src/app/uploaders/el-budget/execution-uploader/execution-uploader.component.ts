@@ -1,14 +1,13 @@
 import {
   AfterViewInit,
-  Component, ElementRef,
+  Component, ElementRef, Inject,
   Input, ViewChild
 } from '@angular/core';
 import {ExecutionUploaderService} from "./shared/execution-uploader.service";
-import {ActivatedRoute, Event, Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Project} from "../../../models/opsd/projects/project.model";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {PurposeCriteria} from "../../../models/el-budget/execution/purpose-criteria/purpose-criteria.model";
-import {TargetService} from "../../../models/opsd/targets/shared/target.service";
 import {Target} from "../../../models/opsd/targets/target.model";
 import {MatStepper} from "@angular/material/stepper";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -22,14 +21,25 @@ import {ProjectModalSelectorComponent} from "../../../models/opsd/projects/proje
 import {WorkPackageModalSelectorComponent} from "../../../models/opsd/work-packages/work-package-modal-selector/work-package-modal-selector.component";
 import {TargetModalSelectorComponent} from "../../../models/opsd/targets/target-modal-selector/target-modal-selector.component";
 import {ProjectService} from "../../../models/opsd/projects/shared/project.service";
-import {MatSlideToggleChange} from "@angular/material/slide-toggle";
+import {animate, state, style, transition, trigger} from "@angular/animations";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {TargetService} from "../../../models/opsd/targets/shared/target.service";
+import {Organization} from "../../../models/opsd/organizations/organization.model";
+import {OrganizationModalSelectorComponent} from "../../../models/opsd/organizations/organization-modal-selector/organization-modal-selector.component";
 
 
 
 @Component({
   selector: 'execution-uploader',
   templateUrl: 'execution-uploader.component.html',
-  styleUrls: ['execution-uploader.component.scss']
+  styleUrls: ['execution-uploader.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 
 export class ExecutionUploaderComponent implements AfterViewInit{
@@ -42,6 +52,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @ViewChild('fileInput') fileInputRef: ElementRef | undefined;
   @ViewChild('projectModalSelectorComponent') projectModalSelectorComponent: ProjectModalSelectorComponent | undefined;
   @ViewChild('workPackageModalSelectorComponent') workPackageModalSelectorComponent: WorkPackageModalSelectorComponent | undefined;
+  @ViewChild('organizationModalSelectorComponent') organizationModalSelectorComponent: OrganizationModalSelectorComponent | undefined;
   @ViewChild('targetModalSelectorComponent') targetModalSelectorComponent: TargetModalSelectorComponent | undefined;
   @ViewChild('targetMatchTable') targetMatchTable: HTMLTableElement | undefined;
   @ViewChild('stepper') stepper: MatStepper | undefined;
@@ -69,6 +80,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   newWorkPackageName: string;
   selectedProject: Project | undefined;
   selectedWorkPackage: WorkPackage | undefined;
+  selectedOrganization: Organization | undefined;
   selectedCostObject: CostObject | undefined;
   selectedFiles: FileList | undefined;
   selectedFileText = '';
@@ -77,7 +89,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   purposeCriteriaList: PurposeCriteria[];
   chosenTargets: Target[];
 
-  displayedColumns: string[] = ['el-budget', 'opsd', 'slider'];
+  displayedColumns: string[] = ['metaId', 'matched'];
+  expandedElement: TargetMatch | null | undefined;
 
 
   constructor(private executionUploaderService: ExecutionUploaderService,
@@ -86,7 +99,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
               public _formBuilder: FormBuilder,
               private _snackBar: MatSnackBar,
               private projectService: ProjectService,
-              private targetService: TargetService) {
+              private targetService: TargetService,
+              public dialog: MatDialog) {
     this.isLinear = true;
     this.isLinear = false;
 
@@ -151,7 +165,6 @@ export class ExecutionUploaderComponent implements AfterViewInit{
         }
       )
     }
-
   }
 
   getOutputProject(outputProject: Project) {
@@ -161,6 +174,13 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   getOutputWorkPackage(outputWorkPackage: WorkPackage) {
     this.selectedWorkPackage = outputWorkPackage;
+    this.organizationModalSelectorComponent?.setOrganization(this.selectedWorkPackage.organization);
+    this.selectedOrganization = this.selectedWorkPackage.organization;
+  }
+
+  getOutputOrganization(outputOrganization: Organization) {
+    this.selectedOrganization = outputOrganization;
+    this.organizationModalSelectorComponent?.setOrganization(outputOrganization);
   }
 
   getOutputTarget(outputSelectedTarget: Target, targetMatch: TargetMatch) {
@@ -185,7 +205,6 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   startProcessFile(): void {
     if (this.selectedFiles) {
       this.isLinear = false;
-
       var currentFileUpload = this.selectedFiles.item(0) as File;
       this.resetResultStep();
       this.executionUploaderService.findWorkPackage(currentFileUpload).subscribe(
@@ -208,6 +227,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.workPackageIsMatched = true;
       this.projectModalSelectorComponent?.disableChoice();
       this.workPackageModalSelectorComponent?.disableChoice();
+      this.organizationModalSelectorComponent?.disableChoice();
       this.selectProjectVisible = true;
       this.selectWorkPackageVisible = true;
 
@@ -215,6 +235,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
         this.projectModalSelectorComponent?.setProject(response.project);
         this.workPackageModalSelectorComponent?.setProject(response.project);
         this.workPackageModalSelectorComponent?.setWorkPackage(response);
+        this.organizationModalSelectorComponent?.setOrganization(response.organization);
       }
     } catch (error) {
       this._snackBar.open(error);
@@ -229,14 +250,17 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.selectProjectVisible = false;
       this.workPackageMatRadioGroupVisible = false;
       this.selectWorkPackageVisible = false;
+      this.organizationModalSelectorComponent?.enableChoice();
     }
   }
 
   workPackageRadioChange(event: MatRadioChange):void {
     if (event.value == 1) {
       this.selectWorkPackageVisible = true;
+      this.organizationModalSelectorComponent?.disableChoice();
     } else if (event.value == 2) {
       this.selectWorkPackageVisible = false;
+      this.organizationModalSelectorComponent?.enableChoice();
     }
   }
 
@@ -272,7 +296,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       } else {
           var projectId = (this.selectProjectVisible) ? this.selectedProject?.id : 0;
           var projectName = (this.selectProjectVisible) ? "" : this.newProjectName;
-          this.executionUploaderService.createWorkPackage(currentFileUpload, this.newWorkPackageName, projectId, projectName).subscribe(
+          var organizationId = this.selectedOrganization ? this.selectedOrganization.id : 0;
+          this.executionUploaderService.createWorkPackage(currentFileUpload, this.newWorkPackageName, projectId, projectName, organizationId).subscribe(
             response => {
               if (response.id) {
                 this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response))
@@ -295,6 +320,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     // this.projectSelectComponent?.enableSelect();
     this.projectModalSelectorComponent?.enableChoice();
     this.workPackageModalSelectorComponent?.enableChoice();
+    this.organizationModalSelectorComponent?.disableChoice();
     this.secondSpinnerVisible = true;
     this.thirdSpinnerVisible = true;
     this.workPackageResultText = '';
@@ -330,7 +356,17 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.executionUploaderService.processPurposeCriteria(file, workPackage)
       .subscribe(
         (response:TargetMatch[]) => {
-          response.forEach(match => {match.createNewTarget = false; match.project = this.projectModalSelectorComponent?.selectedProject});
+          response.forEach(match => {
+            match.project = this.projectModalSelectorComponent?.selectedProject;
+
+            if (match.target) {
+              match.disableTargetChoice = true;
+              match.attachedTarget = true;
+            } else {
+              match.disableTargetChoice = false;
+              match.attachedTarget = false;
+            }
+          });
 
           // if (this.projectModalSelectorComponent?.selectedProject) {
           //   this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
@@ -367,7 +403,16 @@ export class ExecutionUploaderComponent implements AfterViewInit{
             //   this.targetService.getAllByProjectId(this.projectModalSelectorComponent?.selectedProject.id)
             //     .subscribe((data) => this.targetsByProject = data);
             // }
-            response.forEach(match => {match.project = this.projectModalSelectorComponent?.selectedProject});
+            response.forEach(match => {
+              match.project = this.projectModalSelectorComponent?.selectedProject;
+              if (match.target) {
+                match.disableTargetChoice = true;
+                match.attachedTarget = true;
+              } else {
+                match.disableTargetChoice = false;
+                match.attachedTarget = false;
+              }
+            });
             this.targetMatches = response;
             // for (var row in this.targetMatchTable?.rows) {
             //   this.targetSelectComponent?.disableSelect();
@@ -387,22 +432,15 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   }
 
   continueProcessTarget() {
-    // if (this.checkСompletenessTargets(this.targetMatches)) {
-      this.thirdSpinnerVisible = true;
-      this.processTargetBtnVisible = false;
-      // this.targetTableVisible = false;
-      this.processTarget(this.targetMatches);
-    // } else {
-    //   this._snackBar.open("Не везде установлено сопоставление целевых показателей!", 'Ok', {
-    //     duration: 3000
-    //   });
-    // }
+    this.thirdSpinnerVisible = true;
+    this.processTargetBtnVisible = false;
+    this.processTarget(this.targetMatches);
   }
 
   fillChosenTargets(targetMatches: TargetMatch[]) {
     this.chosenTargets = [];
     targetMatches.forEach(targetMatch => {
-      if ((targetMatch.createNewTarget == false) && (targetMatch.target !== null)) {
+      if (targetMatch.target !== null) {
         this.chosenTargets.push(targetMatch.target);
       }
     });
@@ -411,9 +449,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   checkСompletenessTargets(targetMatches: TargetMatch[]) {
     let isComplete = true;
     targetMatches.forEach(targetMatch => {
-      if (targetMatch.createNewTarget && (targetMatch.newTargetName == "" || targetMatch.newTargetName == null)) {
-        isComplete = false;
-      } else if (!targetMatch.createNewTarget && !targetMatch.target) {
+      if (!targetMatch.target) {
         isComplete = false;
       }
     });
@@ -441,6 +477,26 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     return isComplete;
   }
 
+  breakBinding(targetMatch: any) {
+    if (targetMatch.attachedTarget) {
+      const dialogRef = this.dialog.open(ConfirmationOfUnattachComponent);
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.targetService.changeTargetMetaId(targetMatch.target, null).subscribe(
+            result => {
+              targetMatch.disableTargetChoice = false;
+              targetMatch.attachedTarget = false;
+            },
+            error => {
+              this.showMessage(error.error.errorMessage);
+            }
+          );
+        }
+      });
+    }
+  }
+
   showMessage(message: string) : void {
     const config = new MatSnackBarConfig();
     config.panelClass = ['background-red'];
@@ -451,25 +507,18 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this._snackBar.open(message, 'x', config);
   }
 
-  changeToggle(targetMatch: TargetMatch, event: MatSlideToggleChange) {
-    if (targetMatch.target) {
-      event.source.checked = false;
-      this._snackBar.open("Уберите выбранный показатель из поля (нажмите Х)", 'Ok', {
-        duration: 3000
-      });
-    } else {
-      targetMatch.createNewTarget = !targetMatch.createNewTarget;
-      event.source.checked = targetMatch.createNewTarget;
-    }
-  }
-
-  changeTargetName(targetMatch: TargetMatch, name: String) {
-    targetMatch.newTargetName = name;
-  }
 
   openCostObject(event: any) {
     if (this.selectedCostObject) {
       window.open(environment.url + "/cost_objects/" + this.selectedCostObject?.id, "_blank");
     }
   }
+}
+
+@Component({
+  selector: 'confirmation-of-unattach',
+  templateUrl: 'confirmation-of-unattach.html',
+})
+export class ConfirmationOfUnattachComponent {
+  constructor() {}
 }

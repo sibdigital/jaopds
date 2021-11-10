@@ -16,7 +16,8 @@ export class TargetModalSelectorComponent implements OnInit {
   @Output() outputselectedTarget = new EventEmitter<any>();
   @Input() project: Project | undefined;
   @Input() excludedTargets: Target[] = [];
-  disabled: boolean = false;
+  @Input() disabled: boolean = false;
+  @Input() hiddenLabel: boolean = false;
 
   constructor(public dialog: MatDialog) { }
 

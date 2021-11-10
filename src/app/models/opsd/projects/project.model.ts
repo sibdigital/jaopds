@@ -80,4 +80,5 @@ export class Project extends Serializable {
 
   @jsonProperty(String, null)
   missionOfHead: string | null = null;
+
 }

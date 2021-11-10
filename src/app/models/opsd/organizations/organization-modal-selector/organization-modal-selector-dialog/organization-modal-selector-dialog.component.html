@@ -1,15 +1,15 @@
 <button mat-icon-button class="close-button" [mat-dialog-close]="true">
   <mat-icon class="close-icon">close</mat-icon>
 </button>
-<h2 mat-dialog-title>Выбор целевого показателя</h2>
+<h2 mat-dialog-title>Выбор организации</h2>
 <mat-dialog-content class="mat-typography" >
   <mat-form-field appearance="standard" >
     <mat-label>Поиск</mat-label>
-    <input matInput type="text" placeholder="После ввода нажмите Enter" name="keyWord" (keyup.enter)="keyWordChange($event)">
+    <input matInput type="text" placeholder="После ввода нажмите Enter" #input (keyup.enter)="keyWordChange($event)">
   </mat-form-field>
 
   <div class="mat-elevation-z0 margin-bottom-cls">
-    <table mat-table [dataSource]="targets" width="100%"
+    <table mat-table [dataSource]="organizations" width="100%"
            matSort matSortActive="name" matSortDirection="asc">
 
       <!-- ID Column -->
@@ -29,17 +29,10 @@
 
       <!-- Row shown when there is no matching data. -->
       <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">Не найдены целевые показатели</td>
+        <td class="mat-cell" colspan="4">Не найдены организации</td>
       </tr>
     </table>
 
-    <mat-toolbar style="background-color: white">
-      <mat-toolbar-row style="justify-content: space-between">
-        <button mat-icon-button (click)="openAddForm()">
-          <mat-icon style="color: green">add</mat-icon>
-        </button>
-        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Выберите кол-во"></mat-paginator>
-      </mat-toolbar-row>
-    </mat-toolbar>
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Выберите кол-во"></mat-paginator>
   </div>
 </mat-dialog-content>

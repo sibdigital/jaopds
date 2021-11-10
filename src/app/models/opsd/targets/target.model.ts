@@ -2,7 +2,7 @@ import {jsonProperty, Serializable} from "ts-serializable";
 
 export class Target extends Serializable{
   @jsonProperty(Number)
-  id: number = 0;
+  id: number | null = null;
 
   @jsonProperty(Object)
   status: any = null;
@@ -11,7 +11,7 @@ export class Target extends Serializable{
   name: string | null = null;
 
   @jsonProperty(Object)
-  typeModel: any = null;
+  targetType: any = null;
 
   @jsonProperty(String, null)
   unit: string | null = null;
@@ -26,7 +26,7 @@ export class Target extends Serializable{
   comment: string | null = null;
 
   @jsonProperty(Object)
-  project: any = null;
+  project: any;
 
   @jsonProperty(String, null)
   createdAt: string | null = null;
@@ -37,8 +37,8 @@ export class Target extends Serializable{
   @jsonProperty(Boolean, null)
   isApprove: boolean | null = null;
 
-  @jsonProperty(Object)
-  parent: any = null;
+  @jsonProperty(Number, null)
+  parentId: number | null = null;
 
   @jsonProperty(Number, null)
   measureUnitId: number | null = null;
@@ -69,5 +69,8 @@ export class Target extends Serializable{
 
   @jsonProperty(Number, null)
   resultAssigned: number | null = null;
+
+  @jsonProperty(Number, null)
+  metaId: number | null = null;
 
 }
