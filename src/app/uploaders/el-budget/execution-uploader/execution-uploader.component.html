@@ -11,7 +11,8 @@
       </div>
       <div>
         <button
-          mat-raised-button matStepperNext type="button" color = "primary" class="file-input-button" (click) = "startProcessFile()">
+          mat-raised-button matStepperNext type="button" color = "primary"
+          class="file-input-button" (click) = "startProcessFile()" [disabled]="disabledStartButton">
           Начать загрузку
         </button>
       </div>
@@ -135,5 +136,14 @@
         <span>{{ targetResultText }}</span>
       </div>
     </form>
+  </mat-step>
+  <mat-step>
+    <form [formGroup]="fourthFormGroup">
+      <ng-template matStepLabel>Загрузка Рисков</ng-template>
+      <mat-spinner *ngIf="riskSpinnerVisible" [diameter]="30"></mat-spinner>
+      <div style="padding-top: 20px; padding-left: 20px">
+        <span>{{ riskResultText }}</span>
+      </div>
+    </form >
   </mat-step>
 </mat-vertical-stepper>

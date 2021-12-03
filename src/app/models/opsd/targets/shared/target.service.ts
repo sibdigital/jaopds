@@ -18,8 +18,13 @@ export class TargetService {
 
   getAllByProjectIdAndNameAndIdIsNotInAndPageAndSizeAndSort(projectId: number, name: string, ids: any, page: number, size: number, sort: string, sortDir: string) {
     sortDir = (sortDir == '') ? 'asc' : sortDir;
-    let params = {projectId, name, ids, page, size, sort: sort.concat(',', sortDir)};
-    return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/targets/search/findByProject_IdAndNameContainingIgnoreCaseAndIdIsNotIn', {params: params});
+    if (ids) {
+      let params = {projectId, name, ids, page, size, sort: sort.concat(',', sortDir)};
+      return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/targets/search/findByProject_IdAndNameContainingIgnoreCaseAndIdIsNotIn', {params: params});
+    } else {
+      let params = {projectId, name, page, size, sort: sort.concat(',', sortDir)};
+      return this.http.get<any>(environment.jopsd_url + environment.jopsd_api + '/targets/search/findByProject_IdAndNameContainingIgnoreCase', {params: params});
+    }
   }
 
   changeTargetMetaId(target: Target, metaId: number | null) {

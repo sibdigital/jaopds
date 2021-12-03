@@ -88,4 +88,14 @@ export class ExecutionUploaderService {
 
     return this.http.post<TargetMatch[]>(environment.jopsd_url + '/import/execution/process_targets', targetMatches, {headers: headers, params: params});
   }
+
+  processRisks(file: File, workPackage: WorkPackage): Observable<any> {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'multipart/form-data');
+
+    let data: FormData = new FormData();
+    data.append('file', file, file.name);
+    let params = new HttpParams().set("workPackageId", workPackage.id);
+    return this.http.post(environment.jopsd_url + '/import/execution/save_risks', data, {headers: headers, params: params})
+  }
 }

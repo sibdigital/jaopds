@@ -46,6 +46,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   @Input() workPackageResultText = '';
   @Input() financeResultText = '';
   @Input() targetResultText = '';
+  @Input() riskResultText = '';
 
   @Input() outputTarget: Target | undefined;
 
@@ -67,13 +68,16 @@ export class ExecutionUploaderComponent implements AfterViewInit{
   secondSpinnerVisible: boolean;
   thirdSpinnerVisible: boolean;
   targetTableVisible: boolean;
+  riskSpinnerVisible: boolean;
   processTargetBtnVisible: boolean;
   disableTargetToggle: boolean = false;
+  disabledStartButton: boolean;
 
   zeroFormGroup: FormGroup;
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   thirdFormGroup: FormGroup;
+  fourthFormGroup: FormGroup;
 
   workPackageIsMatched: boolean;
   newProjectName: string;
@@ -118,6 +122,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.thirdSpinnerVisible = true;
     this.targetTableVisible = false;
     this.processTargetBtnVisible = false;
+    this.riskSpinnerVisible = false;
+    this.disabledStartButton = false;
 
     // this.secondStepStatus = false;
     this.zeroFormGroup = this._formBuilder.group({
@@ -130,6 +136,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       secondCtrl: ['', Validators.required]
     });
     this.thirdFormGroup = this._formBuilder.group({
+      thirdCtrl: ['', Validators.required]
+    });
+    this.fourthFormGroup = this._formBuilder.group({
       thirdCtrl: ['', Validators.required]
     });
   }
@@ -154,6 +163,8 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.targetTableVisible = false;
     this.targetTableVisible = true;
     this.processTargetBtnVisible = false;
+    this.riskSpinnerVisible = false;
+    this.disabledStartButton = false;
 
   }
 
@@ -209,14 +220,15 @@ export class ExecutionUploaderComponent implements AfterViewInit{
       this.resetResultStep();
       this.executionUploaderService.findWorkPackage(currentFileUpload).subscribe(
          response => {
-          if (response.cause && response.sname == 'null') {
-            this.stepper?.next();
-          } else if (response.id) {
+           this.disabledStartButton = true;
+           if (response.cause && response.name == 'null') {
+              this.stepper?.next();
+           } else if (response.id) {
               this.setProjectAndWorkPackageInSelect(WorkPackage.fromJSON(response));
               this.stepper?.next(); // на шаг 2
               this.stepper?.next()  // на шаг 3
               this.processFinance(currentFileUpload, WorkPackage.fromJSON(response));
-          }
+           }
         }
       )
     }
@@ -224,6 +236,7 @@ export class ExecutionUploaderComponent implements AfterViewInit{
 
   setProjectAndWorkPackageInSelect(response: WorkPackage){
     try {
+      this.selectedWorkPackage = response;
       this.workPackageIsMatched = true;
       this.projectModalSelectorComponent?.disableChoice();
       this.workPackageModalSelectorComponent?.disableChoice();
@@ -420,6 +433,9 @@ export class ExecutionUploaderComponent implements AfterViewInit{
             this.thirdSpinnerVisible = false;
             this.disableTargetToggle = true;
             this.targetResultText = "Целевые показатели сохранены.";
+
+            this.stepper?.next();
+            this.processRisks();
         },
           error => {
                   this.thirdSpinnerVisible = false;
@@ -435,6 +451,24 @@ export class ExecutionUploaderComponent implements AfterViewInit{
     this.thirdSpinnerVisible = true;
     this.processTargetBtnVisible = false;
     this.processTarget(this.targetMatches);
+  }
+
+  processRisks() {
+    this.riskSpinnerVisible = true;
+    if (this.selectedFiles && this.selectedWorkPackage) {
+      var file = this.selectedFiles.item(0) as File;
+      this.executionUploaderService.processRisks(file, this.selectedWorkPackage).subscribe(
+        (data) => {
+          this.riskResultText = 'Риски сохранены';
+        },
+        (error => {
+          this.riskResultText = 'Не удалось сохранить риск';
+        })
+      )
+    } else {
+       this.riskResultText = 'Не удалось сохранить риск';
+    }
+     this.riskSpinnerVisible = false;
   }
 
   fillChosenTargets(targetMatches: TargetMatch[]) {
