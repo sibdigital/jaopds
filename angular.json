@@ -63,7 +63,15 @@
 							"extractLicenses": false,
 							"sourceMap": true,
 							"namedChunks": true
-						}
+						},
+            "stand": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.stand.ts"
+                }
+              ]
+            }
 					},
 					"defaultConfiguration": "production"
 				},
@@ -75,7 +83,10 @@
 						},
 						"development": {
 							"browserTarget": "jaopsd:build:development"
-						}
+						},
+            "stand": {
+              "browserTarget": "jaopsd:build:stand"
+            }
 					},
 					"defaultConfiguration": "development",
 					"options": {
